@@ -75,7 +75,7 @@ dependencies {
     implementation rootProject.ext.dependencies["lifecyclemodel"]
     implementation rootProject.ext.dependencies["refresh"]
     implementation rootProject.ext.dependencies["load-sir"]
-
+//    implementation 'sun.mercy:suns:1.0.0'
     //arms
     implementation project(':Suns')
     //test

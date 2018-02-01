@@ -1,4 +1,4 @@
-<h1 align="center">MVPArms</h1>
+<h1 align="center">MVPSuns</h1>
 
 <p align="center">
    <a href="https://bintray.com/jessyancoding/maven/MVPArms/2.3.5/link">
