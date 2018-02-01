@@ -8,8 +8,8 @@ if (project.rootProject.findProject('local.properties') != null){
     properties.load(project.rootProject.file('local.properties').newDataInputStream())
 }
 
-def gitUrl = 'https://github.com/JessYanCoding/MVPArms.git'   // Git仓库的url
-def siteUrl = 'https://github.com/JessYanCoding/MVPArms'   // 项目的主页
+def gitUrl = 'https://github.com/shuigesuntao/MVPSuns.git'   // Git仓库的url
+def siteUrl = 'https://github.com/shuigesuntao/MVPSuns'   // 项目的主页
 
 version = rootProject.ext.android["versionName"]
 group = "sun.mercy"

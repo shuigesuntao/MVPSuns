@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          package="me.jessyan.mvparms.demo">
+          package="sun.mercy.mvpsuns.demo">
 
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
@@ -27,7 +27,7 @@
         </activity>
         <!-- arms配置 -->
         <meta-data
-            android:name="me.jessyan.mvparms.demo.app.GlobalConfiguration"
+            android:name="sun.mercy.mvpsuns.demo.app.GlobalConfiguration"
             android:value="ConfigModule"/>
 
     </application>
