@@ -26,10 +26,8 @@ import android.view.View;
 /**
  * ================================================
  * 处理高斯模糊的工具类
- * <p>
- * Created by JessYan on 03/06/2014.
- * <a href="mailto:jess.yan.effort@gmail.com">Contact me</a>
- * <a href="https://github.com/JessYanCoding">Follow me</a>
+ *
+ * Created by Created by Sun on 2018/2/2 on 03/06/2014.
  * ================================================
  */
 public class FastBlur {

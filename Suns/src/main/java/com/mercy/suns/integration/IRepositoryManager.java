@@ -15,6 +15,7 @@
   */
 package com.mercy.suns.integration;
 
+import android.arch.persistence.room.RoomDatabase;
 import android.content.Context;
 
 import com.mercy.suns.mvp.IModel;
@@ -24,10 +25,7 @@ import com.mercy.suns.mvp.IModel;
  * 用来管理网络请求层,以及数据缓存层,以后可能添加数据库请求层
  * 提供给 {@link IModel} 必要的 Api 做数据处理
  *
- * @see <a href="https://github.com/JessYanCoding/MVPArms/wiki#2.3">RepositoryManager wiki 官方文档</a>
- * Created by JessYan on 17/03/2017 11:15
- * <a href="mailto:jess.yan.effort@gmail.com">Contact me</a>
- * <a href="https://github.com/JessYanCoding">Follow me</a>
+ * Created by Sun on 2018/2/2
  * ================================================
  */
 public interface IRepositoryManager {
@@ -56,5 +54,14 @@ public interface IRepositoryManager {
     void clearAllCache();
 
     Context getContext();
+
+    /**
+     * 根据传入的 Class 获取对应的 RoomDatabase
+     *
+     * @param database
+     * @param <T>
+     * @return
+     */
+    <T extends RoomDatabase> T obtainRoomDatabase(Class<T> database, String dbName);
 
 }

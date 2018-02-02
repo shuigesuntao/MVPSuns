@@ -24,9 +24,7 @@ import com.mercy.suns.di.component.SunsComponent;
  * 框架要求框架中的每个 {@link android.app.Application} 都需要实现此类,以满足规范
  *
  * @see BaseApplication
- * Created by JessYan on 25/04/2017 14:54
- * <a href="mailto:jess.yan.effort@gmail.com">Contact me</a>
- * <a href="https://github.com/JessYanCoding">Follow me</a>
+ * Created by Sun on 2018/2/2
  * ================================================
  */
 public interface App {

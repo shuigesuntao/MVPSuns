@@ -28,7 +28,7 @@ import com.mercy.suns.integration.cache.Cache;
 import com.mercy.suns.integration.cache.CacheType;
 import com.mercy.suns.integration.lifecycle.ActivityLifecycleable;
 import com.mercy.suns.mvp.IPresenter;
-import com.mercy.suns.utils.ArmsUtils;
+import com.mercy.suns.utils.SunsUtils;
 import com.trello.rxlifecycle2.android.ActivityEvent;
 
 import javax.inject.Inject;
@@ -42,9 +42,7 @@ import io.reactivex.subjects.Subject;
  * 因为 Java 只能单继承,所以如果要用到需要继承特定 {@link Activity} 的三方库,那你就需要自己自定义 {@link Activity}
  * 继承于这个特定的 {@link Activity},然后再按照 {@link BaseActivity} 的格式,将代码复制过去,记住一定要实现{@link IActivity}
  *
- * Created by JessYan on 22/03/2016
- * <a href="mailto:jess.yan.effort@gmail.com">Contact me</a>
- * <a href="https://github.com/JessYanCoding">Follow me</a>
+ * Created by Sun on 2018/2/2
  * ================================================
  */
 public abstract class BaseActivity<P extends IPresenter> extends AppCompatActivity implements IActivity, ActivityLifecycleable {
@@ -59,7 +57,7 @@ public abstract class BaseActivity<P extends IPresenter> extends AppCompatActivi
     @Override
     public synchronized Cache<String, Object> provideCache() {
         if (mCache == null) {
-            mCache = ArmsUtils.obtainAppComponentFromContext(this).cacheFactory().build(CacheType.ACTIVITY_CACHE);
+            mCache = SunsUtils.obtainAppComponentFromContext(this).cacheFactory().build(CacheType.ACTIVITY_CACHE);
         }
         return mCache;
     }

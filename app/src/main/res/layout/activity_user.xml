@@ -7,6 +7,12 @@
 
     <include layout="@layout/include_title" />
 
+    <Button
+        android:id="@+id/mBtnTest"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Room测试"/>
+
     <com.scwang.smartrefresh.layout.SmartRefreshLayout
         android:id="@+id/mSmartRefreshLayout"
         android:layout_width="match_parent"

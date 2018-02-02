@@ -25,10 +25,8 @@ import com.mercy.suns.http.imageloader.BaseImageLoaderStrategy;
  * ================================================
  * 如果你想具有配置 @{@link Glide} 的权利,则需要让 {@link BaseImageLoaderStrategy}
  * 的实现类也必须实现 {@link GlideAppliesOptions}
- * <p>
- * Created by JessYan on 13/08/2017 22:02
- * <a href="mailto:jess.yan.effort@gmail.com">Contact me</a>
- * <a href="https://github.com/JessYanCoding">Follow me</a>
+ *
+ * Created by Sun on 2018/2/2
  * ================================================
  */
 

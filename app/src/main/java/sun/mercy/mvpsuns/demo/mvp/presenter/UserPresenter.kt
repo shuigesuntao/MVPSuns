@@ -4,6 +4,7 @@ import android.arch.lifecycle.Lifecycle
 import android.arch.lifecycle.OnLifecycleEvent
 import android.support.v4.app.Fragment
 import android.support.v4.app.SupportActivity
+import android.util.Log
 import com.mercy.suns.mvp.BasePresenter
 import com.mercy.suns.utils.PermissionUtil
 import com.mercy.suns.utils.RxLifecycleUtils
@@ -13,9 +14,11 @@ import io.reactivex.schedulers.Schedulers
 import me.jessyan.rxerrorhandler.core.RxErrorHandler
 import me.jessyan.rxerrorhandler.handler.ErrorHandleSubscriber
 import me.jessyan.rxerrorhandler.handler.RetryWithDelay
+import sun.mercy.mvpsuns.demo.app.utils.RxUtils
 import sun.mercy.mvpsuns.demo.mvp.contract.UserContract
 import sun.mercy.mvpsuns.demo.mvp.model.entity.User
 import sun.mercy.mvpsuns.demo.mvp.ui.adapter.UserAdapter
+import timber.log.Timber
 import javax.inject.Inject
 
 /**
@@ -74,7 +77,13 @@ class UserPresenter @Inject constructor(model: UserContract.Model, rootView: Use
                     if (pullToRefresh) {
                         mRootView.showLoading()
                     }//显示下拉刷新的进度条
-                }.subscribeOn(AndroidSchedulers.mainThread())
+                }.doOnNext{
+                    //数据库存储
+                    if(it.isNotEmpty()){
+                        mModel.saveUsers(it)
+                    }
+                }
+                .subscribeOn(AndroidSchedulers.mainThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .doFinally {
                     if (pullToRefresh) {
@@ -89,6 +98,7 @@ class UserPresenter @Inject constructor(model: UserContract.Model, rootView: Use
                             mRootView.showEmpty()
                         } else {
                             mRootView.showContent()
+
                             mAdapter?.apply {
                                 if (pullToRefresh) {
                                     setNewData(users)
@@ -109,6 +119,19 @@ class UserPresenter @Inject constructor(model: UserContract.Model, rootView: Use
                     override fun onError(t: Throwable) {
                         mRootView.showError()
                         super.onError(t)
+                    }
+                })
+    }
+
+
+    fun requestUsersFromDb(){
+        mModel.getAllUsersFromDb()
+                .compose(RxUtils.applySimpleSchedulers(mRootView))
+                .subscribe(object :ErrorHandleSubscriber<List<User>>(mErrorHandler){
+                    override fun onNext(t: List<User>) {
+                       t.forEach {
+                           Timber.tag("Sun").e(it.login)
+                       }
                     }
                 })
     }

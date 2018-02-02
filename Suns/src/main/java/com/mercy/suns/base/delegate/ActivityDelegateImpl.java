@@ -31,10 +31,7 @@ import dagger.android.support.HasSupportFragmentInjector;
 /**
  * ================================================
  * {@link ActivityDelegate} 默认实现类
- * <p>
- * Created by JessYan on 26/04/2017 20:23
- * <a href="mailto:jess.yan.effort@gmail.com">Contact me</a>
- * <a href="https://github.com/JessYanCoding">Follow me</a>
+ * Created by Sun on 2018/2/2
  * ================================================
  */
 public class ActivityDelegateImpl implements ActivityDelegate , HasSupportFragmentInjector {

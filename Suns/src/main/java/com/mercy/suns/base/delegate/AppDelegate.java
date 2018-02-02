@@ -29,14 +29,12 @@ import com.mercy.suns.base.App;
 import com.mercy.suns.base.BaseApplication;
 import com.mercy.suns.di.component.DaggerSunsComponent;
 import com.mercy.suns.di.component.SunsComponent;
-import com.mercy.suns.di.module.SunsModule;
-import com.mercy.suns.di.module.ClientModule;
 import com.mercy.suns.di.module.GlobalConfigModule;
 import com.mercy.suns.integration.ActivityLifecycle;
 import com.mercy.suns.integration.ConfigModule;
 import com.mercy.suns.integration.ManifestParser;
 import com.mercy.suns.integration.lifecycle.ActivityLifecycleForRxLifecycle;
-import com.mercy.suns.utils.ArmsUtils;
+import com.mercy.suns.utils.SunsUtils;
 import com.mercy.suns.utils.Preconditions;
 
 import java.util.ArrayList;
@@ -52,10 +50,7 @@ import javax.inject.Inject;
  * (Application一定要实现APP接口),框架就能照常运行
  *
  * @see BaseApplication
- * @see <a href="https://github.com/JessYanCoding/MVPArms/wiki#3.12">AppDelegate wiki 官方文档</a>
- * Created by JessYan on 24/04/2017 09:44
- * <a href="mailto:jess.yan.effort@gmail.com">Contact me</a>
- * <a href="https://github.com/JessYanCoding">Follow me</a>
+ * Created by Syb on 2018/2/2
  * ================================================
  */
 public class AppDelegate implements App, AppLifecycles {
@@ -102,8 +97,9 @@ public class AppDelegate implements App, AppLifecycles {
 
         mSunsComponent = DaggerSunsComponent
                 .builder()
-                .sunsModule(new SunsModule(mApplication))//提供application
-                .clientModule(new ClientModule())//用于提供okhttp和retrofit的单例
+//                .sunsModule(new SunsModule(mApplication))//提供application
+//                .clientModule(new ClientModule())//用于提供okhttp和retrofit的单例
+                .application(mApplication)
                 .globalConfigModule(getGlobalConfigModule(mApplication, mModules))//全局配置
                 .build();
         mSunsComponent.inject(this);
@@ -194,7 +190,7 @@ public class AppDelegate implements App, AppLifecycles {
     /**
      * 将 {@link SunsComponent} 返回出去, 供其它地方使用, {@link SunsComponent} 接口中声明的方法返回的实例, 在 {@link #getSunsComponent()} 拿到对象后都可以直接使用
      *
-     * @see ArmsUtils#obtainAppComponentFromContext(Context) 可直接获取 {@link SunsComponent}
+     * @see SunsUtils#obtainAppComponentFromContext(Context) 可直接获取 {@link SunsComponent}
      * @return SunsComponent
      */
     @NonNull

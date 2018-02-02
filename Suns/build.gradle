@@ -15,6 +15,14 @@ android {
         targetSdkVersion rootProject.ext.android["targetSdkVersion"]
         versionCode rootProject.ext.android["versionCode"]
         versionName rootProject.ext.android["versionName"]
+
+        //Room
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments = ["room.schemaLocation":
+                                     "$projectDir/schemas".toString()]
+            }
+        }
     }
     buildTypes {
         release {
@@ -22,6 +30,7 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+
 }
 
 
@@ -47,7 +56,8 @@ dependencies {
         exclude module: 'support-v4'
     }
     api rootProject.ext.dependencies["annotations"]
-    api "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    //kotlin
+    api "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
 
     //rx
     api rootProject.ext.dependencies["rxjava2"]
@@ -71,6 +81,7 @@ dependencies {
         exclude module: 'rxandroid'
         exclude module: 'rxlifecycle'
     }
+    //permissions
     api(rootProject.ext.dependencies["rxpermissions2"]) {
         exclude module: 'rxjava'
         exclude module: 'support-annotations'
@@ -95,6 +106,8 @@ dependencies {
         exclude module: 'okio'
     }
     api rootProject.ext.dependencies["okhttp3"]
+
+    //gilde
     api(rootProject.ext.dependencies["glide"]) {
         exclude module: 'support-v4'
     }
@@ -112,6 +125,21 @@ dependencies {
     api(rootProject.ext.dependencies["dagger2-android"]) {
         exclude module: 'jsr305'
     }
+
+    //room
+    api rootProject.ext.dependencies["room-runtime"]
+    annotationProcessor rootProject.ext.dependencies["room-compiler"]
+    testApi(rootProject.ext.dependencies["room-testing"]) {
+        exclude module: 'support-compat'
+        exclude module: 'support-annotations'
+        exclude module: 'support-core-utils'
+        exclude module: 'gson'
+    }
+    api(rootProject.ext.dependencies["room-rxjava2"]) {
+        exclude module: 'rxjava'
+    }
+
+    //dagger.android
     api(rootProject.ext.dependencies["dagger2-android-support"]) {
         exclude module: 'jsr305'
         exclude module: 'appcompat-v7'
@@ -120,7 +148,11 @@ dependencies {
     annotationProcessor(rootProject.ext.dependencies["dagger2-android-processor"]) {
         exclude module: 'jsr305'
     }
+
+    //eventBus
     api rootProject.ext.dependencies["androideventbus"]
+
+    //gson
     api rootProject.ext.dependencies["gson"]
 
     //test

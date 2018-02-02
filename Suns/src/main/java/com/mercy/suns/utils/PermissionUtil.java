@@ -33,10 +33,7 @@ import timber.log.Timber;
  * ================================================
  * 权限请求工具类
  *
- * @see <a href="https://github.com/JessYanCoding/MVPArms/wiki#3.9">PermissionUtil wiki 官方文档</a>
- * Created by JessYan on 17/10/2016 10:09
- * <a href="mailto:jess.yan.effort@gmail.com">Contact me</a>
- * <a href="https://github.com/JessYanCoding">Follow me</a>
+ * Created by Sun on 2018/2/2
  * ================================================
  */
 public class PermissionUtil {

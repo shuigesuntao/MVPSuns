@@ -3,7 +3,7 @@ package sun.mercy.mvpsuns.demo.app
 import android.app.Application
 import android.content.Context
 import com.mercy.suns.base.delegate.AppLifecycles
-import com.mercy.suns.utils.ArmsUtils
+import com.mercy.suns.utils.SunsUtils
 import com.squareup.leakcanary.LeakCanary
 import com.squareup.leakcanary.RefWatcher
 import sun.mercy.mvpsuns.demo.BuildConfig
@@ -46,10 +46,10 @@ class AppLifecyclesImpl: AppLifecycles {
             //                    });
         }
         //leakCanary内存泄露检查
-        ArmsUtils.obtainAppComponentFromContext(application).extras().put(RefWatcher::class.java.name,
+        SunsUtils.obtainAppComponentFromContext(application).extras().put(RefWatcher::class.java.name,
                 if (BuildConfig.USE_CANARY) LeakCanary.install(application) else RefWatcher.DISABLED)
         //扩展 AppManager 的远程遥控功能
-        ArmsUtils.obtainAppComponentFromContext(application).appManager().setHandleListener { _, message ->
+        SunsUtils.obtainAppComponentFromContext(application).appManager().setHandleListener { _, message ->
             when (message.what) {
 
             }//case 0:

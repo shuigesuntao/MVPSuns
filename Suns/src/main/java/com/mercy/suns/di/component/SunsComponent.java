@@ -27,25 +27,22 @@ import com.mercy.suns.http.imageloader.ImageLoader;
 import com.mercy.suns.integration.AppManager;
 import com.mercy.suns.integration.IRepositoryManager;
 import com.mercy.suns.integration.cache.Cache;
-import com.mercy.suns.utils.ArmsUtils;
+import com.mercy.suns.utils.SunsUtils;
 
 import java.io.File;
 
 import javax.inject.Singleton;
 
+import dagger.BindsInstance;
 import dagger.Component;
 import me.jessyan.rxerrorhandler.core.RxErrorHandler;
 import okhttp3.OkHttpClient;
 
 /**
  * ================================================
- * 可通过 {@link ArmsUtils#obtainAppComponentFromContext(Context)} 拿到此接口的实现类
+ * 可通过 {@link SunsUtils#obtainAppComponentFromContext(Context)} 拿到此接口的实现类
  * 拥有此接口的实现类即可调用对应的方法拿到 Dagger 提供的对应实例
- *
- * @see <a href="https://github.com/JessYanCoding/MVPArms/wiki#2.2">SunsComponent wiki 官方文档</a>
- * Created by JessYan on 8/4/2016
- * <a href="mailto:jess.yan.effort@gmail.com">Contact me</a>
- * <a href="https://github.com/JessYanCoding">Follow me</a>
+ * Created by Sun on 2018/2/2
  * ================================================
  */
 @Singleton
@@ -80,4 +77,12 @@ public interface SunsComponent {
     Cache.Factory cacheFactory();
 
     void inject(AppDelegate delegate);
+
+    @Component.Builder
+    interface Builder {
+        @BindsInstance
+        Builder application(Application application);
+        Builder globalConfigModule(GlobalConfigModule globalConfigModule);
+        SunsComponent build();
+    }
 }

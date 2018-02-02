@@ -11,6 +11,7 @@ import io.rx_cache2.EvictDynamicKey
 import sun.mercy.mvpsuns.demo.mvp.contract.UserContract
 import sun.mercy.mvpsuns.demo.mvp.model.api.cache.CommonCache
 import sun.mercy.mvpsuns.demo.mvp.model.api.service.UserService
+import sun.mercy.mvpsuns.demo.mvp.model.db.UserDb
 import sun.mercy.mvpsuns.demo.mvp.model.entity.User
 
 import timber.log.Timber
@@ -25,6 +26,8 @@ import javax.inject.Inject
 class UserModel @Inject constructor(repositoryManager: IRepositoryManager):
         BaseModel(repositoryManager), UserContract.Model {
 
+
+
     private val USERS_PER_PAGE = 10
 
     override fun getUsers(lastIdQueried: Int, update: Boolean): Observable<List<User>> {
@@ -38,6 +41,21 @@ class UserModel @Inject constructor(repositoryManager: IRepositoryManager):
                             .map { listReply -> listReply.data }
                 }
 
+    }
+
+    override fun getAllUsersFromDb(): Observable<List<User>> {
+        return mRepositoryManager
+                .obtainRoomDatabase(UserDb::class.java,UserDb.DB_NAME)
+                .userDao()
+                .getAll()
+                .toObservable()
+    }
+
+    override fun saveUsers(users: List<User>) {
+        mRepositoryManager
+                .obtainRoomDatabase(UserDb::class.java,UserDb.DB_NAME)
+                .userDao()
+                .insertAll(*users.toTypedArray())
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_PAUSE)

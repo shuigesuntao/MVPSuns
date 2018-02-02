@@ -31,10 +31,8 @@ import java.io.ObjectOutputStream;
 /**
  * ================================================
  * 处理数据或本地文件的工具类
- * <p>
- * Created by JessYan on 2016/3/15
- * <a href="mailto:jess.yan.effort@gmail.com">Contact me</a>
- * <a href="https://github.com/JessYanCoding">Follow me</a>
+ *
+ * Created by Sun on 2018/2/2
  * ================================================
  */
 public class DataHelper {

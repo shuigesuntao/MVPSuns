@@ -16,6 +16,8 @@
 package com.mercy.suns.di.module;
 
 import android.app.Application;
+import android.arch.persistence.room.Room;
+import android.arch.persistence.room.RoomDatabase;
 import android.content.Context;
 import android.support.annotation.Nullable;
 
@@ -49,10 +51,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 /**
  * ================================================
  * 提供一些三方库客户端实例的 {@link Module}
- * <p>
- * Created by JessYan on 2016/3/14.
- * <a href="mailto:jess.yan.effort@gmail.com">Contact me</a>
- * <a href="https://github.com/JessYanCoding">Follow me</a>
+ * Created by Sun on 20182/2
  * ================================================
  */
 @Module
@@ -209,5 +208,23 @@ public class ClientModule {
          * @return
          */
         RxCache configRxCache(Context context, RxCache.Builder builder);
+    }
+
+    public interface RoomConfiguration<T extends RoomDatabase> {
+        /**
+         * 提供接口，自定义配置 RoomDatabase
+         *
+         * @param context Context
+         * @param builder RoomDatabase.Builder
+         */
+        void configRoom(Context context, RoomDatabase.Builder<T> builder);
+
+
+        RoomConfiguration EMPTY = new RoomConfiguration() {
+            @Override
+            public void configRoom(Context context, RoomDatabase.Builder builder) {
+
+            }
+        };
     }
 }

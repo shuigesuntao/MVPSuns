@@ -22,6 +22,14 @@ android {
         versionCode rootProject.ext.android["versionCode"]
         versionName rootProject.ext.android["versionName"]
         testInstrumentationRunner rootProject.ext.dependencies["androidJUnitRunner"]
+
+        //Room
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments = ["room.schemaLocation":
+                                     "$projectDir/schemas".toString()]
+            }
+        }
     }
     buildTypes {
 
@@ -69,6 +77,7 @@ dependencies {
     kapt(rootProject.ext.dependencies["dagger2-android-processor"]) {
         exclude module: 'jsr305'
     }
+    kapt rootProject.ext.dependencies["room-compiler"]
 
     implementation rootProject.ext.dependencies["progressmanager"]
     implementation rootProject.ext.dependencies["retrofit-url-manager"]
@@ -79,7 +88,6 @@ dependencies {
     //arms
     implementation project(':Suns')
     //test
-    testImplementation rootProject.ext.dependencies["junit"]
     debugImplementation rootProject.ext.dependencies["canary-debug"]
     releaseImplementation rootProject.ext.dependencies["canary-release"]
     testImplementation rootProject.ext.dependencies["canary-release"]

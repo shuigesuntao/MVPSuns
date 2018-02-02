@@ -24,7 +24,7 @@ import android.support.v4.app.Fragment;
 import com.mercy.suns.base.delegate.AppDelegate;
 import com.mercy.suns.base.delegate.AppLifecycles;
 import com.mercy.suns.di.component.SunsComponent;
-import com.mercy.suns.utils.ArmsUtils;
+import com.mercy.suns.utils.SunsUtils;
 import com.mercy.suns.utils.Preconditions;
 
 import javax.inject.Inject;
@@ -36,18 +36,16 @@ import dagger.android.support.HasSupportFragmentInjector;
 
 /**
  * ================================================
- * 本框架由 MVP + Dagger2 + Retrofit + RxJava + Androideventbus + Butterknife 组成
+ * 本框架由 MVP + Dagger.Android + Retrofit + RxJava + Androideventbus  组成
  *
- * @see <a href="https://github.com/JessYanCoding/MVPArms/wiki">请配合官方 Wiki 文档学习本框架</a>
- * Created by JessYan on 22/03/2016
- * <a href="mailto:jess.yan.effort@gmail.com">Contact me</a>
- * <a href="https://github.com/JessYanCoding">Follow me</a>
+ * Created by Sun on 2018/2/2
  * ================================================
  */
 public class BaseApplication extends Application implements App,HasActivityInjector,HasSupportFragmentInjector {
     //Dagger.Android Activity 注入
     @Inject
     DispatchingAndroidInjector<Activity> mActivityInjector;
+    //Dagger.Android Fragment 注入
     @Inject
     DispatchingAndroidInjector<Fragment> mSupportFragmentInjector;
 
@@ -87,7 +85,7 @@ public class BaseApplication extends Application implements App,HasActivityInjec
     /**
      * 将 {@link SunsComponent} 返回出去, 供其它地方使用, {@link SunsComponent} 接口中声明的方法所返回的实例, 在 {@link #getSunsComponent()} 拿到对象后都可以直接使用
      *
-     * @see ArmsUtils#obtainAppComponentFromContext(Context) 可直接获取 {@link SunsComponent}
+     * @see SunsUtils#obtainAppComponentFromContext(Context) 可直接获取 {@link SunsComponent}
      * @return SunsComponent
      */
     @NonNull

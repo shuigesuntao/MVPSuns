@@ -29,9 +29,7 @@ import com.mercy.suns.integration.RepositoryManager;
  * 从而为不同的模块构建不同的缓存策略
  *
  * @see Cache.Factory#build(CacheType)
- * Created by JessYan on 25/09/2017 18:05
- * <a href="mailto:jess.yan.effort@gmail.com">Contact me</a>
- * <a href="https://github.com/JessYanCoding">Follow me</a>
+ * Created by Sun on 2018/2/2
  * ================================================
  */
 public interface CacheType {
@@ -40,6 +38,7 @@ public interface CacheType {
     int EXTRAS_TYPE_ID = 2;
     int ACTIVITY_CACHE_TYPE_ID = 3;
     int FRAGMENT_CACHE_TYPE_ID = 4;
+    int ROOM_DATABASE_CACHE_TYPE_ID = 5;
     /**
      * {@link RepositoryManager}中存储 Retrofit Service 的容器
      */
@@ -142,6 +141,29 @@ public interface CacheType {
         @Override
         public int getCacheTypeId() {
             return FRAGMENT_CACHE_TYPE_ID;
+        }
+
+        @Override
+        public int calculateCacheSize(Context context) {
+            ActivityManager activityManager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+            int targetMemoryCacheSize = (int) (activityManager.getMemoryClass() * MAX_SIZE_MULTIPLIER * 1024);
+            if (targetMemoryCacheSize >= MAX_SIZE) {
+                return MAX_SIZE;
+            }
+            return targetMemoryCacheSize;
+        }
+    };
+
+    /**
+     * {@link Fragment} 中存储数据的容器
+     */
+    CacheType ROOM_DATABASE_CACHE = new CacheType() {
+        private static final int MAX_SIZE = 80;
+        private static final float MAX_SIZE_MULTIPLIER = 0.0008f;
+
+        @Override
+        public int getCacheTypeId() {
+            return ROOM_DATABASE_CACHE_TYPE_ID;
         }
 
         @Override

@@ -16,6 +16,8 @@
 package com.mercy.suns.di.module;
 
 import android.app.Application;
+import android.arch.persistence.room.RoomDatabase;
+import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
@@ -23,6 +25,8 @@ import android.text.TextUtils;
 import com.bumptech.glide.Glide;
 import com.mercy.suns.http.BaseUrl;
 import com.mercy.suns.http.GlobalHttpHandler;
+import com.mercy.suns.http.log.DefaultFormatPrinter;
+import com.mercy.suns.http.log.FormatPrinter;
 import com.mercy.suns.http.log.RequestInterceptor;
 import com.mercy.suns.http.imageloader.BaseImageLoaderStrategy;
 import com.mercy.suns.http.imageloader.glide.GlideImageLoaderStrategy;
@@ -30,6 +34,7 @@ import com.mercy.suns.integration.cache.Cache;
 import com.mercy.suns.integration.cache.CacheType;
 import com.mercy.suns.integration.cache.LruCache;
 import com.mercy.suns.utils.DataHelper;
+import com.mercy.suns.utils.Preconditions;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -46,11 +51,7 @@ import okhttp3.Interceptor;
 /**
  * ================================================
  * 框架独创的建造者模式 {@link Module},可向框架中注入外部配置的自定义参数
- *
- * @see <a href="https://github.com/JessYanCoding/MVPArms/wiki#3.1">GlobalConfigModule Wiki 官方文档</a>
- * Created by JessYan on 2016/3/14.
- * <a href="mailto:jess.yan.effort@gmail.com">Contact me</a>
- * <a href="https://github.com/JessYanCoding">Follow me</a>
+ * Created by Sun on 2018/2/2.
  * ================================================
  */
 @Module
@@ -65,8 +66,10 @@ public class GlobalConfigModule {
     private ClientModule.RetrofitConfiguration mRetrofitConfiguration;
     private ClientModule.OkhttpConfiguration mOkhttpConfiguration;
     private ClientModule.RxCacheConfiguration mRxCacheConfiguration;
+    private ClientModule.RoomConfiguration mRoomConfiguration;
     private SunsModule.GsonConfiguration mGsonConfiguration;
     private RequestInterceptor.Level mPrintHttpLogLevel;
+    private FormatPrinter mFormatPrinter;
     private Cache.Factory mCacheFactory;
 
     private GlobalConfigModule(Builder builder) {
@@ -81,7 +84,9 @@ public class GlobalConfigModule {
         this.mOkhttpConfiguration = builder.okhttpConfiguration;
         this.mRxCacheConfiguration = builder.rxCacheConfiguration;
         this.mGsonConfiguration = builder.gsonConfiguration;
+        this.mRoomConfiguration = builder.roomConfiguration;
         this.mPrintHttpLogLevel = builder.printHttpLogLevel;
+        this.mFormatPrinter = builder.formatPrinter;
         this.mCacheFactory = builder.cacheFactory;
     }
 
@@ -193,9 +198,21 @@ public class GlobalConfigModule {
 
     @Singleton
     @Provides
+    ClientModule.RoomConfiguration provideRoomConfiguration() {
+        return mRoomConfiguration == null ? ClientModule.RoomConfiguration.EMPTY: mRoomConfiguration;
+    }
+
+    @Singleton
+    @Provides
     @Nullable
     RequestInterceptor.Level providePrintHttpLogLevel() {
         return mPrintHttpLogLevel;
+    }
+
+    @Singleton
+    @Provides
+    FormatPrinter provideFormatPrinter(){
+        return mFormatPrinter == null ? new DefaultFormatPrinter() : mFormatPrinter;
     }
 
     @Singleton
@@ -205,7 +222,7 @@ public class GlobalConfigModule {
             @NonNull
             @Override
             public Cache build(CacheType type) {
-                //若想自定义 LruCache 的 size, 或者不想使用 LruCache , 想使用自己自定义的策略
+                //若想自定义 LruCache 的 size, 或者不想使用 LruCache, 想使用自己自定义的策略
                 //并使用 GlobalConfigModule.Builder#cacheFactory() 扩展
                 return new LruCache(type.calculateCacheSize(application));
             }
@@ -225,7 +242,9 @@ public class GlobalConfigModule {
         private ClientModule.OkhttpConfiguration okhttpConfiguration;
         private ClientModule.RxCacheConfiguration rxCacheConfiguration;
         private SunsModule.GsonConfiguration gsonConfiguration;
+        private ClientModule.RoomConfiguration roomConfiguration;
         private RequestInterceptor.Level printHttpLogLevel;
+        private FormatPrinter formatPrinter;
         private Cache.Factory cacheFactory;
 
         private Builder() {
@@ -240,10 +259,7 @@ public class GlobalConfigModule {
         }
 
         public Builder baseurl(BaseUrl baseUrl) {
-            if (baseUrl == null) {
-                throw new NullPointerException("BaseUrl can not be null");
-            }
-            this.baseUrl = baseUrl;
+            this.baseUrl = Preconditions.checkNotNull(baseUrl, BaseUrl.class.getCanonicalName() + "can not be null.");
             return this;
         }
 
@@ -296,10 +312,18 @@ public class GlobalConfigModule {
             return this;
         }
 
-        public Builder printHttpLogLevel(RequestInterceptor.Level printHttpLogLevel) { //是否让框架打印 Http 的请求和响应信息
-            if (printHttpLogLevel == null)
-                throw new NullPointerException("printHttpLogLevel == null. Use RequestInterceptor.Level.NONE instead.");
-            this.printHttpLogLevel = printHttpLogLevel;
+        public Builder roomConfiguration(ClientModule.RoomConfiguration roomConfiguration) {
+            this.roomConfiguration = roomConfiguration;
+            return this;
+        }
+
+        public Builder printHttpLogLevel(RequestInterceptor.Level printHttpLogLevel) {//是否让框架打印 Http 的请求和响应信息
+            this.printHttpLogLevel = Preconditions.checkNotNull(printHttpLogLevel, "The printHttpLogLevel can not be null, use RequestInterceptor.Level.NONE instead.");
+            return this;
+        }
+
+        public Builder formatPrinter(FormatPrinter formatPrinter){
+            this.formatPrinter = Preconditions.checkNotNull(formatPrinter, FormatPrinter.class.getCanonicalName() + "can not be null.");
             return this;
         }
 
@@ -311,9 +335,5 @@ public class GlobalConfigModule {
         public GlobalConfigModule build() {
             return new GlobalConfigModule(this);
         }
-
-
     }
-
-
 }

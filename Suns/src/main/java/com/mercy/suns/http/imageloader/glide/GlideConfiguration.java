@@ -32,7 +32,7 @@ import com.mercy.suns.di.component.SunsComponent;
 import com.mercy.suns.http.OkHttpUrlLoader;
 import com.mercy.suns.http.imageloader.BaseImageLoaderStrategy;
 import com.mercy.suns.utils.DataHelper;
-import com.mercy.suns.utils.ArmsUtils;
+import com.mercy.suns.utils.SunsUtils;
 
 import java.io.File;
 import java.io.InputStream;
@@ -41,10 +41,8 @@ import java.io.InputStream;
  * ================================================
  * {@link AppGlideModule} 的默认实现类
  * 用于配置缓存文件夹,切换图片请求框架等操作
- * <p>
- * Created by JessYan on 16/4/15.
- * <a href="mailto:jess.yan.effort@gmail.com">Contact me</a>
- * <a href="https://github.com/JessYanCoding">Follow me</a>
+ *
+ * Created by Sun on 2018/2/2
  * ================================================
  */
 @GlideModule(glideName = "GlideArms")
@@ -53,7 +51,7 @@ public class GlideConfiguration extends AppGlideModule {
 
     @Override
     public void applyOptions(Context context, GlideBuilder builder) {
-        SunsComponent sunsComponent = ArmsUtils.obtainAppComponentFromContext(context);
+        SunsComponent sunsComponent = SunsUtils.obtainAppComponentFromContext(context);
         builder.setDiskCache(new DiskCache.Factory() {
             @Override
             public DiskCache build() {
@@ -84,7 +82,7 @@ public class GlideConfiguration extends AppGlideModule {
     @Override
     public void registerComponents(Context context, Glide glide, Registry registry) {
         //Glide 默认使用 HttpURLConnection 做网络请求,在这切换成 Okhttp 请求
-        SunsComponent sunsComponent = ArmsUtils.obtainAppComponentFromContext(context);
+        SunsComponent sunsComponent = SunsUtils.obtainAppComponentFromContext(context);
         registry.replace(GlideUrl.class, InputStream.class, new OkHttpUrlLoader.Factory(sunsComponent.okHttpClient()));
     }
 

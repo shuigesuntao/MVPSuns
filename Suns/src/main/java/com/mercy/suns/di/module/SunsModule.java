@@ -18,13 +18,18 @@ package com.mercy.suns.di.module;
 import android.app.Application;
 import android.content.Context;
 import android.support.annotation.Nullable;
+import android.support.v4.app.FragmentManager;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.mercy.suns.integration.FragmentLifecycle;
 import com.mercy.suns.integration.IRepositoryManager;
 import com.mercy.suns.integration.RepositoryManager;
 import com.mercy.suns.integration.cache.Cache;
 import com.mercy.suns.integration.cache.CacheType;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.inject.Singleton;
 
@@ -36,26 +41,23 @@ import dagger.android.support.AndroidSupportInjectionModule;
 /**
  * ================================================
  * 提供一些框架必须的实例的 {@link Module}
- * <p>
- * Created by JessYan on 8/4/2016.
- * <a href="mailto:jess.yan.effort@gmail.com">Contact me</a>
- * <a href="https://github.com/JessYanCoding">Follow me</a>
+ * Created by Sun on 2018/2/2.
  * ================================================
  */
 @Module(includes = {AndroidInjectionModule.class,
         AndroidSupportInjectionModule.class})
 public class SunsModule {
-    private Application mApplication;
-
-    public SunsModule(Application application) {
-        this.mApplication = application;
-    }
-
-    @Singleton
-    @Provides
-    public Application provideApplication() {
-        return mApplication;
-    }
+//    private Application mApplication;
+//
+//    public SunsModule(Application application) {
+//        this.mApplication = application;
+//    }
+//
+//    @Singleton
+//    @Provides
+//    public Application provideApplication() {
+//        return mApplication;
+//    }
 
     @Singleton
     @Provides
@@ -76,6 +78,18 @@ public class SunsModule {
     @Provides
     public Cache<String, Object> provideExtras(Cache.Factory cacheFactory) {
         return cacheFactory.build(CacheType.EXTRAS);
+    }
+
+    @Singleton
+    @Provides
+    public FragmentManager.FragmentLifecycleCallbacks provideFragmentLifecycle() {
+        return new FragmentLifecycle();
+    }
+
+    @Singleton
+    @Provides
+    public List<FragmentManager.FragmentLifecycleCallbacks> provideFragmentLifecycles(){
+        return new ArrayList<>();
     }
 
     public interface GsonConfiguration {

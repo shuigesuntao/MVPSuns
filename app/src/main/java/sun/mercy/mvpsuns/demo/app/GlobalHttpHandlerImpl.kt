@@ -5,7 +5,7 @@ import android.text.TextUtils
 import com.google.gson.reflect.TypeToken
 import com.mercy.suns.http.GlobalHttpHandler
 import com.mercy.suns.http.log.RequestInterceptor
-import com.mercy.suns.utils.ArmsUtils
+import com.mercy.suns.utils.SunsUtils
 
 import okhttp3.Interceptor
 import okhttp3.Request
@@ -26,7 +26,7 @@ class GlobalHttpHandlerImpl(private val context: Context): GlobalHttpHandler {
 
         if (!TextUtils.isEmpty(httpResult) && RequestInterceptor.isJson(response?.body()?.contentType())) {
             try {
-                val list = ArmsUtils.obtainAppComponentFromContext(context)
+                val list = SunsUtils.obtainAppComponentFromContext(context)
                         .gson()
                         .fromJson<List<User>>(httpResult, object : TypeToken<List<User>>() {}.type)
                 val user = list[0]

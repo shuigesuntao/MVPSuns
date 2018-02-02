@@ -3,10 +3,12 @@ package sun.mercy.mvpsuns.demo.mvp.ui.activity
 import android.os.Bundle
 import android.support.v7.widget.RecyclerView
 import com.chad.library.adapter.base.BaseQuickAdapter
-import com.mercy.suns.utils.ArmsUtils
+import com.mercy.suns.utils.SunsUtils
 import com.tbruyelle.rxpermissions2.RxPermissions
 import kotlinx.android.synthetic.main.activity_user.*
 import sun.mercy.mvpsuns.demo.R
+import sun.mercy.mvpsuns.demo.R.id.*
+import sun.mercy.mvpsuns.demo.app.BaseLceActivity
 import sun.mercy.mvpsuns.demo.app.callbak.EmptyCallback
 import sun.mercy.mvpsuns.demo.app.callbak.ErrorCallback
 import sun.mercy.mvpsuns.demo.mvp.contract.UserContract
@@ -21,7 +23,7 @@ import javax.inject.Inject
  * @date 2018/1/31
  * UserActivity
  */
-class UserActivity: sun.mercy.mvpsuns.demo.app.BaseLceActivity<UserPresenter>(), UserContract.View {
+class UserActivity: BaseLceActivity<UserPresenter>(), UserContract.View {
 
     @Inject
     lateinit var mAdapter: UserAdapter
@@ -35,6 +37,9 @@ class UserActivity: sun.mercy.mvpsuns.demo.app.BaseLceActivity<UserPresenter>(),
 
     override fun initData(savedInstanceState: Bundle?) {
         super.initData(savedInstanceState)
+        mBtnTest.setOnClickListener{
+            mPresenter.requestUsersFromDb()
+        }
         initRecyclerView()
     }
 
@@ -74,7 +79,7 @@ class UserActivity: sun.mercy.mvpsuns.demo.app.BaseLceActivity<UserPresenter>(),
     }
 
     override fun showMessage(message: String) {
-        ArmsUtils.snackbarText(message)
+        SunsUtils.snackbarText(message)
     }
 
     override fun showEmpty() {

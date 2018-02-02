@@ -1,5 +1,5 @@
 /**
- * Copyright 2017 JessYan
+ * Copyright 2018 Sun
  * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -47,15 +47,13 @@ import timber.log.Timber;
  * ================================================
  * 解析框架中的网络请求和响应结果,并以日志形式输出,调试神器
  * 可使用 {@link GlobalConfigModule.Builder#printHttpLogLevel(Level)} 控制或关闭日志
- * <p>
- * Created by JessYan on 7/1/2016.
- * <a href="mailto:jess.yan.effort@gmail.com">Contact me</a>
- * <a href="https://github.com/JessYanCoding">Follow me</a>
+ * Created by Sun on 2018/2/2.
  * ================================================
  */
 @Singleton
 public class RequestInterceptor implements Interceptor {
     private GlobalHttpHandler mHandler;
+    private final FormatPrinter mPrinter;
     private final Level printLevel;
 
     public enum Level {
@@ -66,12 +64,13 @@ public class RequestInterceptor implements Interceptor {
     }
 
     @Inject
-    public RequestInterceptor(@Nullable GlobalHttpHandler handler, @Nullable Level level) {
+    public RequestInterceptor(@Nullable GlobalHttpHandler handler, @Nullable Level level, FormatPrinter printer) {
         this.mHandler = handler;
+        this.mPrinter = printer;
         if (level == null)
-            printLevel = Level.ALL;
+            this.printLevel = Level.ALL;
         else
-            printLevel = level;
+            this.printLevel = level;
     }
 
     @Override
@@ -83,9 +82,9 @@ public class RequestInterceptor implements Interceptor {
         if (logRequest) {
             //打印请求信息
             if (request.body() != null && isParseable(request.body().contentType())) {
-                DefaultFormatPrinter.printJsonRequest(request, parseParams(request));
+                mPrinter.printJsonRequest(request, parseParams(request));
             } else {
-                DefaultFormatPrinter.printFileRequest(request);
+                mPrinter.printFileRequest(request);
             }
         }
 
@@ -118,13 +117,10 @@ public class RequestInterceptor implements Interceptor {
             final String url = originalResponse.request().url().toString();
 
             if (responseBody != null && isParseable(responseBody.contentType())) {
-                DefaultFormatPrinter.printJsonResponse(TimeUnit.NANOSECONDS.toMillis(t2 - t1),
-                        isSuccessful, code, header,
-                        isJson(responseBody.contentType()) ?
-                                CharacterHandler.jsonFormat(bodyString) : isXml(responseBody.contentType()) ?
-                                CharacterHandler.xmlFormat(bodyString) : bodyString, segmentList, message, url);
+                mPrinter.printJsonResponse(TimeUnit.NANOSECONDS.toMillis(t2 - t1), isSuccessful,
+                        code, header, responseBody.contentType(), bodyString, segmentList, message, url);
             } else {
-                DefaultFormatPrinter.printFileResponse(TimeUnit.NANOSECONDS.toMillis(t2 - t1),
+                mPrinter.printFileResponse(TimeUnit.NANOSECONDS.toMillis(t2 - t1),
                         isSuccessful, code, header, segmentList, message, url);
             }
 
@@ -134,52 +130,51 @@ public class RequestInterceptor implements Interceptor {
             return mHandler.onHttpResultResponse(bodyString, chain, originalResponse);
 
         return originalResponse;
-
     }
 
-        /**
-         * 打印响应结果
-         *
-         * @param request
-         * @param response
-         * @param logResponse
-         * @return
-         * @throws IOException
-         */
-        @Nullable
-        private String printResult(Request request, Response response, boolean logResponse) throws IOException {
-            try {
-                //读取服务器返回的结果
-                ResponseBody responseBody = response.newBuilder().build().body();
-                BufferedSource source = responseBody.source();
-                source.request(Long.MAX_VALUE); // Buffer the entire body.
-                Buffer buffer = source.buffer();
+    /**
+     * 打印响应结果
+     *
+     * @param request
+     * @param response
+     * @param logResponse
+     * @return
+     * @throws IOException
+     */
+    @Nullable
+    private String printResult(Request request, Response response, boolean logResponse) throws IOException {
+        try {
+            //读取服务器返回的结果
+            ResponseBody responseBody = response.newBuilder().build().body();
+            BufferedSource source = responseBody.source();
+            source.request(Long.MAX_VALUE); // Buffer the entire body.
+            Buffer buffer = source.buffer();
 
-                //获取content的压缩类型
-                String encoding = response
-                        .headers()
-                        .get("Content-Encoding");
+            //获取content的压缩类型
+            String encoding = response
+                    .headers()
+                    .get("Content-Encoding");
 
-                Buffer clone = buffer.clone();
+            Buffer clone = buffer.clone();
 
-                //解析response content
-                return parseContent(responseBody, encoding, clone);
-            } catch (IOException e) {
-                e.printStackTrace();
-                return "{\"error\": \"" + e.getMessage() + "\"}";
-            }
+            //解析response content
+            return parseContent(responseBody, encoding, clone);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return "{\"error\": \"" + e.getMessage() + "\"}";
         }
+    }
 
 
 
-        /**
-         * 解析服务器响应的内容
-         *
-         * @param responseBody
-         * @param encoding
-         * @param clone
-         * @return
-         */
+    /**
+     * 解析服务器响应的内容
+     *
+     * @param responseBody
+     * @param encoding
+     * @param clone
+     * @return
+     */
     private String parseContent(ResponseBody responseBody, String encoding, Buffer clone) {
         Charset charset = Charset.forName("UTF-8");
         MediaType contentType = responseBody.contentType();
@@ -269,4 +264,5 @@ public class RequestInterceptor implements Interceptor {
             return s;
         return s.substring(i + 1, s.length() - 1);
     }
+
 }

@@ -4,7 +4,7 @@ import android.content.Context
 import android.net.ParseException
 import com.google.gson.JsonIOException
 import com.google.gson.JsonParseException
-import com.mercy.suns.utils.ArmsUtils
+import com.mercy.suns.utils.SunsUtils
 import me.jessyan.rxerrorhandler.handler.listener.ResponseErrorListener
 import org.json.JSONException
 import retrofit2.HttpException
@@ -28,7 +28,7 @@ class ResponseErrorListenerImpl:ResponseErrorListener {
             is HttpException -> msg = convertStatusCode(t)
             is JsonParseException, is ParseException, is JSONException, is JsonIOException -> msg = "数据解析错误"
         }
-        ArmsUtils.snackbarText(msg)
+        SunsUtils.snackbarText(msg)
     }
 
     private fun convertStatusCode(httpException: HttpException): String {

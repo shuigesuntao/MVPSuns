@@ -28,7 +28,7 @@ import com.mercy.suns.integration.cache.Cache;
 import com.mercy.suns.integration.cache.CacheType;
 import com.mercy.suns.integration.lifecycle.FragmentLifecycleable;
 import com.mercy.suns.mvp.IPresenter;
-import com.mercy.suns.utils.ArmsUtils;
+import com.mercy.suns.utils.SunsUtils;
 import com.trello.rxlifecycle2.android.FragmentEvent;
 
 import javax.inject.Inject;
@@ -40,10 +40,7 @@ import io.reactivex.subjects.Subject;
  * ================================================
  * 因为 Java 只能单继承,所以如果要用到需要继承特定 @{@link Fragment} 的三方库,那你就需要自己自定义 @{@link Fragment}
  * 继承于这个特定的 @{@link Fragment},然后再按照 {@link BaseFragment} 的格式,将代码复制过去,记住一定要实现{@link IFragment}
- * <p>
- * Created by JessYan on 22/03/2016
- * <a href="mailto:jess.yan.effort@gmail.com">Contact me</a>
- * <a href="https://github.com/JessYanCoding">Follow me</a>
+ * Created by Sun on 2018/2/2
  * ================================================
  */
 public abstract class BaseFragment<P extends IPresenter> extends Fragment implements IFragment, FragmentLifecycleable {
@@ -57,7 +54,7 @@ public abstract class BaseFragment<P extends IPresenter> extends Fragment implem
     @Override
     public synchronized Cache<String, Object> provideCache() {
         if (mCache == null) {
-            mCache = ArmsUtils.obtainAppComponentFromContext(getActivity()).cacheFactory().build(CacheType.FRAGMENT_CACHE);
+            mCache = SunsUtils.obtainAppComponentFromContext(getActivity()).cacheFactory().build(CacheType.FRAGMENT_CACHE);
         }
         return mCache;
     }

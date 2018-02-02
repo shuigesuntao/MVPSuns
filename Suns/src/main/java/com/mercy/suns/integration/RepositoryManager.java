@@ -16,8 +16,11 @@
 package com.mercy.suns.integration;
 
 import android.app.Application;
+import android.arch.persistence.room.Room;
+import android.arch.persistence.room.RoomDatabase;
 import android.content.Context;
 
+import com.mercy.suns.di.module.ClientModule;
 import com.mercy.suns.integration.cache.Cache;
 import com.mercy.suns.integration.cache.CacheType;
 import com.mercy.suns.mvp.IModel;
@@ -35,10 +38,7 @@ import retrofit2.Retrofit;
  * 用来管理网络请求层,以及数据缓存层,以后可能添加数据库请求层
  * 提供给 {@link IModel} 层必要的 Api 做数据处理
  *
- * @see <a href="https://github.com/JessYanCoding/MVPArms/wiki#2.3">RepositoryManager wiki 官方文档</a>
- * Created by JessYan on 13/04/2017 09:52
- * <a href="mailto:jess.yan.effort@gmail.com">Contact me</a>
- * <a href="https://github.com/JessYanCoding">Follow me</a>
+ * Created by Sun on 2018/2/2
  * ================================================
  */
 @Singleton
@@ -48,15 +48,18 @@ public class RepositoryManager implements IRepositoryManager {
     private Application mApplication;
     private Cache<String, Object> mRetrofitServiceCache;
     private Cache<String, Object> mCacheServiceCache;
-    private Cache.Factory mCachefactory;
+    private Cache<String, Object> mRoomDatabaseCache;
+    private Cache.Factory mCacheFactory;
+    private ClientModule.RoomConfiguration mRoomConfiguration;
 
     @Inject
     public RepositoryManager(Lazy<Retrofit> retrofit, Lazy<RxCache> rxCache, Application application
-            , Cache.Factory cachefactory) {
+            , Cache.Factory cachefactory,ClientModule.RoomConfiguration roomConfiguration) {
         this.mRetrofit = retrofit;
         this.mRxCache = rxCache;
         this.mApplication = application;
-        this.mCachefactory = cachefactory;
+        this.mCacheFactory = cachefactory;
+        this.mRoomConfiguration = roomConfiguration;
     }
 
     /**
@@ -69,7 +72,7 @@ public class RepositoryManager implements IRepositoryManager {
     @Override
     public synchronized <T> T obtainRetrofitService(Class<T> service) {
         if (mRetrofitServiceCache == null)
-            mRetrofitServiceCache = mCachefactory.build(CacheType.RETROFIT_SERVICE_CACHE);
+            mRetrofitServiceCache = mCacheFactory.build(CacheType.RETROFIT_SERVICE_CACHE);
         Preconditions.checkNotNull(mRetrofitServiceCache, "Cannot return null from a Cache.Factory#build(int) method");
         T retrofitService = (T) mRetrofitServiceCache.get(service.getCanonicalName());
         if (retrofitService == null) {
@@ -89,7 +92,7 @@ public class RepositoryManager implements IRepositoryManager {
     @Override
     public synchronized <T> T obtainCacheService(Class<T> cache) {
         if (mCacheServiceCache == null)
-            mCacheServiceCache = mCachefactory.build(CacheType.CACHE_SERVICE_CACHE);
+            mCacheServiceCache = mCacheFactory.build(CacheType.CACHE_SERVICE_CACHE);
         Preconditions.checkNotNull(mCacheServiceCache, "Cannot return null from a Cache.Factory#build(int) method");
         T cacheService = (T) mCacheServiceCache.get(cache.getCanonicalName());
         if (cacheService == null) {
@@ -110,5 +113,25 @@ public class RepositoryManager implements IRepositoryManager {
     @Override
     public Context getContext() {
         return mApplication;
+    }
+
+    @Override
+    public synchronized<T extends RoomDatabase> T obtainRoomDatabase(Class<T> database, String dbName) {
+        if (mRoomDatabaseCache == null) {
+            mRoomDatabaseCache = mCacheFactory.build(CacheType.ROOM_DATABASE_CACHE);
+        }
+        Preconditions.checkNotNull(mRoomDatabaseCache, "Cannot return null from a Cache.Factory#build(int) method");
+        T roomDatabase = (T) mRoomDatabaseCache.get(database.getName());
+        if (roomDatabase == null) {
+            RoomDatabase.Builder builder = Room.databaseBuilder(mApplication, database, dbName);
+            //自定义 Room 配置
+            if (mRoomConfiguration != null) {
+                mRoomConfiguration.configRoom(mApplication, builder);
+            }
+            roomDatabase = (T) builder.build();
+            mRoomDatabaseCache.put(database.getName(), roomDatabase);
+        }
+
+        return roomDatabase;
     }
 }
