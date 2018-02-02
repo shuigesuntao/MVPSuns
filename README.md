@@ -1,8 +1,8 @@
 <h1 align="center">MVPSuns</h1>
 
 <p align="center">
-   <a href="https://bintray.com/jessyancoding/maven/MVPArms/2.3.5/link">
-    <img src="https://img.shields.io/badge/bintray-v1.0.0-brightgreen.svg" alt="Latest Stable Version" />
+   <a href="https://bintray.com/shuaigesuntao/maven/SunsMvp/1.0.1/link">
+    <img src="https://img.shields.io/badge/bintray-v1.0.1-brightgreen.svg" alt="Latest Stable Version" />
   </a>
   <a href="https://travis-ci.org/JessYanCoding/MVPArms">
     <img src="https://travis-ci.org/JessYanCoding/MVPArms.svg?branch=master" alt="Build Status" />
@@ -20,6 +20,9 @@
 
 
 ## MVP basic Architecture
+
+## 导入框架
+## compile 'sun.mercy:Suns:1.0.1'
 
 
 ## Functionality & Libraries

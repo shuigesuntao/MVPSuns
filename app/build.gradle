@@ -84,9 +84,9 @@ dependencies {
     implementation rootProject.ext.dependencies["lifecyclemodel"]
     implementation rootProject.ext.dependencies["refresh"]
     implementation rootProject.ext.dependencies["load-sir"]
-//    implementation 'sun.mercy:suns:1.0.0'
+    implementation 'sun.mercy:Suns:1.0.1'
     //arms
-    implementation project(':Suns')
+//    implementation project(':Suns')
     //test
     debugImplementation rootProject.ext.dependencies["canary-debug"]
     releaseImplementation rootProject.ext.dependencies["canary-release"]
