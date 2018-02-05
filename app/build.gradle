@@ -30,6 +30,10 @@ android {
                                      "$projectDir/schemas".toString()]
             }
         }
+
+        ndk {
+            abiFilters "armeabi-v7a", "x86"
+        }
     }
     buildTypes {
 
@@ -70,6 +74,8 @@ dependencies {
     implementation(rootProject.ext.dependencies["cardview-v7"]) {
         exclude module: 'support-annotations'
     }
+    //loading
+    implementation 'com.wang.avi:library:2.1.3'
     //tools
     kapt(rootProject.ext.dependencies["dagger2-compiler"]) {
         exclude module: 'js305'
@@ -78,17 +84,17 @@ dependencies {
         exclude module: 'jsr305'
     }
     kapt rootProject.ext.dependencies["room-compiler"]
-
     implementation rootProject.ext.dependencies["progressmanager"]
     implementation rootProject.ext.dependencies["retrofit-url-manager"]
     implementation rootProject.ext.dependencies["lifecyclemodel"]
     implementation rootProject.ext.dependencies["refresh"]
     implementation rootProject.ext.dependencies["load-sir"]
-//    implementation 'sun.mercy:Suns:1.0.1'
+    //    implementation 'sun.mercy:Suns:1.0.1'
     //arms
     implementation project(':Suns')
     //test
     debugImplementation rootProject.ext.dependencies["canary-debug"]
     releaseImplementation rootProject.ext.dependencies["canary-release"]
     testImplementation rootProject.ext.dependencies["canary-release"]
+    implementation project(':IMKit')
 }

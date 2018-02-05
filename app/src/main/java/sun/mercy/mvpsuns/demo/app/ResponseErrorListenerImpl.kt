@@ -23,12 +23,23 @@ class ResponseErrorListenerImpl:ResponseErrorListener {
         //这里不光是只能打印错误,还可以根据不同的错误作出不同的逻辑处理
         var msg = "未知错误"
         when (t) {
+            is BaseException -> msg = convertServerCode(t)
             is UnknownHostException -> msg = "网络不可用"
             is SocketTimeoutException -> msg = "请求网络超时"
             is HttpException -> msg = convertStatusCode(t)
             is JsonParseException, is ParseException, is JSONException, is JsonIOException -> msg = "数据解析错误"
         }
         SunsUtils.snackbarText(msg)
+    }
+
+    private fun convertServerCode(e: BaseException): String {
+        return when{
+            e.code == 1234 -> "连接融云服务器失败"
+            e.code == 100 -> "手机或者密码错误"
+            e.code == 1000 -> "手机或者密码错误"
+            else -> "未知错误"
+        }
+
     }
 
     private fun convertStatusCode(httpException: HttpException): String {

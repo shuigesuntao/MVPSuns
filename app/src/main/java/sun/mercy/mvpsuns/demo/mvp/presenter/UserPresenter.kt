@@ -4,7 +4,6 @@ import android.arch.lifecycle.Lifecycle
 import android.arch.lifecycle.OnLifecycleEvent
 import android.support.v4.app.Fragment
 import android.support.v4.app.SupportActivity
-import android.util.Log
 import com.mercy.suns.mvp.BasePresenter
 import com.mercy.suns.utils.PermissionUtil
 import com.mercy.suns.utils.RxLifecycleUtils
@@ -14,7 +13,7 @@ import io.reactivex.schedulers.Schedulers
 import me.jessyan.rxerrorhandler.core.RxErrorHandler
 import me.jessyan.rxerrorhandler.handler.ErrorHandleSubscriber
 import me.jessyan.rxerrorhandler.handler.RetryWithDelay
-import sun.mercy.mvpsuns.demo.app.utils.RxUtils
+import sun.mercy.mvpsuns.demo.app.utils.execute
 import sun.mercy.mvpsuns.demo.mvp.contract.UserContract
 import sun.mercy.mvpsuns.demo.mvp.model.entity.User
 import sun.mercy.mvpsuns.demo.mvp.ui.adapter.UserAdapter
@@ -126,12 +125,11 @@ class UserPresenter @Inject constructor(model: UserContract.Model, rootView: Use
 
     fun requestUsersFromDb(){
         mModel.getAllUsersFromDb()
-                .compose(RxUtils.applySimpleSchedulers(mRootView))
-                .subscribe(object :ErrorHandleSubscriber<List<User>>(mErrorHandler){
+                .execute(mRootView,object :ErrorHandleSubscriber<List<User>>(mErrorHandler){
                     override fun onNext(t: List<User>) {
-                       t.forEach {
-                           Timber.tag("Sun").e(it.login)
-                       }
+                        t.forEach {
+                            Timber.tag("Sun").e(it.login)
+                        }
                     }
                 })
     }

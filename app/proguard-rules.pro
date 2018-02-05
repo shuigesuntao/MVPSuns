@@ -17,3 +17,6 @@
 #}
 
 # 混淆规则在 arms moudule下的proguard-rules.pro中,混淆前先参阅https://github.com/JessYanCoding/MVPArms/wiki#1.5
+
+-keep class com.wang.avi.** { *; }
+-keep class com.wang.avi.indicators.** { *; }

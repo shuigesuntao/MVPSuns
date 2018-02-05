@@ -7,7 +7,7 @@ package sun.mercy.mvpsuns.demo.mvp.model.api
  */
 interface Api {
     companion object {
-        val APP_DOMAIN = "https://api.github.com"
-        val RequestSuccess = "0"
+        const val APP_DOMAIN = "http://api.sealtalk.im"
+        const val RequestSuccess = 200
     }
 }
