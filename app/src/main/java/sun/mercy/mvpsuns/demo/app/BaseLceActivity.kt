@@ -1,7 +1,7 @@
 package sun.mercy.mvpsuns.demo.app
 
 import android.os.Bundle
-import com.mercy.suns.base.BaseActivity
+import com.mercy.suns.base.BaseMvpActivity
 import com.mercy.suns.mvp.IPresenter
 import com.kingja.loadsir.core.LoadService
 import com.kingja.loadsir.core.LoadSir
@@ -13,7 +13,7 @@ import com.kingja.loadsir.core.LoadSir
  * @date 2018/1/31
  * BaseLceActivity
  */
-abstract class BaseLceActivity<P:IPresenter>:BaseActivity<P>() {
+abstract class BaseLceActivity<P:IPresenter>: BaseMvpActivity<P>() {
 
     protected lateinit var mLoadService: LoadService<*>
 

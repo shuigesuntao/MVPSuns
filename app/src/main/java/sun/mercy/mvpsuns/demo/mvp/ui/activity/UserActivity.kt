@@ -47,7 +47,7 @@ class UserActivity: BaseLceActivity<UserPresenter>(), UserContract.View {
      * 初始化RecyclerView
      */
     private fun initRecyclerView() {
-        mSmartRefreshLayout.setOnRefreshListener { mPresenter.requestUsers(true) }
+        mSmartRefreshLayout.setOnRefreshListener {  mPresenter.requestUsers(true) }
 
         mRecyclerView.apply {
             //如果可以确定每个item的高度是固定的，设置这个选项可以提高性能
@@ -56,7 +56,7 @@ class UserActivity: BaseLceActivity<UserPresenter>(), UserContract.View {
         }
 
         mAdapter.apply {
-            setOnLoadMoreListener({ mPresenter.requestUsers(false) }, mRecyclerView)
+            setOnLoadMoreListener({  mPresenter.requestUsers(false) }, mRecyclerView)
             setOnItemClickListener { _, _, position -> showMessage("position" + position) }
             openLoadAnimation(BaseQuickAdapter.SLIDEIN_LEFT)
             isFirstOnly(false)

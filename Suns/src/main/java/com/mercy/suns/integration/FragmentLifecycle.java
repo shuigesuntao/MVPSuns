@@ -1,5 +1,5 @@
 /**
-  * Copyright 2017 JessYan
+  * Copyright 2018 Sun
   *
   * Licensed under the Apache License, Version 2.0 (the "License");
   * you may not use this file except in compliance with the License.
@@ -28,6 +28,9 @@ import com.mercy.suns.base.delegate.IFragment;
 import com.mercy.suns.integration.cache.Cache;
 import com.mercy.suns.utils.Preconditions;
 
+import javax.inject.Inject;
+import javax.inject.Singleton;
+
 import timber.log.Timber;
 
 /**
@@ -38,7 +41,13 @@ import timber.log.Timber;
  * Created by Sun on 2018/2/2
  * ================================================
  */
+@Singleton
 public class FragmentLifecycle extends FragmentManager.FragmentLifecycleCallbacks {
+
+    @Inject
+    public FragmentLifecycle(){
+
+    }
 
     @Override
     public void onFragmentAttached(FragmentManager fm, Fragment f, Context context) {

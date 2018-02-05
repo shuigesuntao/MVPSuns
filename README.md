@@ -22,7 +22,7 @@
 ## MVP basic Architecture
 
 ## 导入框架
-## compile 'sun.mercy:Suns:1.0.1'
+### compile 'sun.mercy:Suns:1.0.1'
 
 
 ## Functionality & Libraries

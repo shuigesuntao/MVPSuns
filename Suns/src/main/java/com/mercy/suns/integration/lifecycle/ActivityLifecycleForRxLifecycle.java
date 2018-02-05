@@ -1,5 +1,5 @@
 /**
-  * Copyright 2017 JessYan
+  * Copyright 2018 Sun
   *
   * Licensed under the Apache License, Version 2.0 (the "License");
   * you may not use this file except in compliance with the License.
@@ -19,14 +19,15 @@ import android.app.Activity;
 import android.app.Application;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentManager;
 
+import com.mercy.suns.base.BaseMvpActivity;
 import com.trello.rxlifecycle2.RxLifecycle;
 import com.trello.rxlifecycle2.android.ActivityEvent;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
+import dagger.Lazy;
 import io.reactivex.subjects.Subject;
 
 /**
@@ -38,7 +39,10 @@ import io.reactivex.subjects.Subject;
  */
 @Singleton
 public class ActivityLifecycleForRxLifecycle implements Application.ActivityLifecycleCallbacks {
-    private FragmentManager.FragmentLifecycleCallbacks mFragmentLifecycle;
+
+
+    @Inject
+    Lazy<FragmentLifecycleForRxLifecycle> mFragmentLifecycle;
 
     @Inject
     public ActivityLifecycleForRxLifecycle() {
@@ -52,11 +56,8 @@ public class ActivityLifecycleForRxLifecycle implements Application.ActivityLife
     public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
         if (activity instanceof ActivityLifecycleable) {
             obtainSubject(activity).onNext(ActivityEvent.CREATE);
-            if (activity instanceof FragmentActivity){
-                if (mFragmentLifecycle == null) {
-                    mFragmentLifecycle = new FragmentLifecycleForRxLifecycle();
-                }
-                ((FragmentActivity) activity).getSupportFragmentManager().registerFragmentLifecycleCallbacks(mFragmentLifecycle, true);
+            if (activity instanceof FragmentActivity) {
+                ((FragmentActivity) activity).getSupportFragmentManager().registerFragmentLifecycleCallbacks(mFragmentLifecycle.get(), true);
             }
         }
     }
@@ -102,7 +103,7 @@ public class ActivityLifecycleForRxLifecycle implements Application.ActivityLife
     }
 
     /**
-     * 从 {@link com.mercy.suns.base.BaseActivity} 中获得桥梁对象 {@code BehaviorSubject<ActivityEvent> mLifecycleSubject}
+     * 从 {@link BaseMvpActivity} 中获得桥梁对象 {@code BehaviorSubject<ActivityEvent> mLifecycleSubject}
      * @see <a href="https://mcxiaoke.gitbooks.io/rxdocs/content/Subject.html">BehaviorSubject 官方中文文档</a>
      */
     private Subject<ActivityEvent> obtainSubject(Activity activity) {

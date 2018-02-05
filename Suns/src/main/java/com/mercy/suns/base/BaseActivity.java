@@ -1,5 +1,5 @@
 /**
-  * Copyright 2017 JessYan
+  * Copyright 2018 Sun
   *
   * Licensed under the Apache License, Version 2.0 (the "License");
   * you may not use this file except in compliance with the License.
@@ -16,22 +16,17 @@
 package com.mercy.suns.base;
 
 import android.app.Activity;
-
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 
-
 import com.mercy.suns.base.delegate.IActivity;
 import com.mercy.suns.integration.cache.Cache;
 import com.mercy.suns.integration.cache.CacheType;
 import com.mercy.suns.integration.lifecycle.ActivityLifecycleable;
-import com.mercy.suns.mvp.IPresenter;
 import com.mercy.suns.utils.SunsUtils;
 import com.trello.rxlifecycle2.android.ActivityEvent;
-
-import javax.inject.Inject;
 
 import io.reactivex.subjects.BehaviorSubject;
 import io.reactivex.subjects.Subject;
@@ -45,13 +40,11 @@ import io.reactivex.subjects.Subject;
  * Created by Sun on 2018/2/2
  * ================================================
  */
-public abstract class BaseActivity<P extends IPresenter> extends AppCompatActivity implements IActivity, ActivityLifecycleable {
+public abstract class BaseActivity extends AppCompatActivity implements IActivity, ActivityLifecycleable {
     protected final String TAG = this.getClass().getSimpleName();
     private final BehaviorSubject<ActivityEvent> mLifecycleSubject = BehaviorSubject.create();
     private Cache<String, Object> mCache;
 
-    @Inject
-    protected P mPresenter;
 
     @NonNull
     @Override
@@ -75,14 +68,6 @@ public abstract class BaseActivity<P extends IPresenter> extends AppCompatActivi
         initData(savedInstanceState);
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        if (mPresenter != null){
-            mPresenter.onDestroy();
-            this.mPresenter = null;
-        }
-    }
 
     /**
      * 是否使用eventBus,默认为使用(true)，
@@ -96,7 +81,7 @@ public abstract class BaseActivity<P extends IPresenter> extends AppCompatActivi
 
     /**
      * 这个Activity是否会使用Fragment,框架会根据这个属性判断是否注册{@link android.support.v4.app.FragmentManager.FragmentLifecycleCallbacks}
-     * 如果返回false,那意味着这个Activity不需要绑定Fragment,那你再在这个Activity中绑定继承于 {@link com.mercy.suns.base.BaseFragment} 的Fragment将不起任何作用
+     * 如果返回false,那意味着这个Activity不需要绑定Fragment,那你再在这个Activity中绑定继承于 {@link BaseMvpFragment} 的Fragment将不起任何作用
      *
      * @return
      */

@@ -52,9 +52,13 @@ import timber.log.Timber;
  */
 @Singleton
 public class RequestInterceptor implements Interceptor {
-    private GlobalHttpHandler mHandler;
-    private final FormatPrinter mPrinter;
-    private final Level printLevel;
+    @Inject
+    @Nullable
+    GlobalHttpHandler mHandler;
+    @Inject
+    FormatPrinter mPrinter;
+    @Inject
+    Level printLevel;
 
     public enum Level {
         NONE,       //不打印log
@@ -64,14 +68,10 @@ public class RequestInterceptor implements Interceptor {
     }
 
     @Inject
-    public RequestInterceptor(@Nullable GlobalHttpHandler handler, @Nullable Level level, FormatPrinter printer) {
-        this.mHandler = handler;
-        this.mPrinter = printer;
-        if (level == null)
-            this.printLevel = Level.ALL;
-        else
-            this.printLevel = level;
+    public RequestInterceptor(){
+
     }
+
 
     @Override
     public Response intercept(Chain chain) throws IOException {

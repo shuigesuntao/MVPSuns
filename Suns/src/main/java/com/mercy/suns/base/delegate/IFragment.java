@@ -1,5 +1,5 @@
 /**
-  * Copyright 2017 JessYan
+  * Copyright 2018 Sun
   *
   * Licensed under the Apache License, Version 2.0 (the "License");
   * you may not use this file except in compliance with the License.
@@ -22,7 +22,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.mercy.suns.base.BaseFragment;
+import com.mercy.suns.base.BaseMvpFragment;
 import com.mercy.suns.integration.cache.Cache;
 import com.mercy.suns.integration.cache.LruCache;
 
@@ -32,7 +32,7 @@ import org.simple.eventbus.EventBus;
  * ================================================
  * 框架要求框架中的每个 {@link Fragment} 都需要实现此类,以满足规范
  *
- * @see BaseFragment
+ * @see BaseMvpFragment
  * Created by Sun on 2018/2/2
  * ================================================
  */

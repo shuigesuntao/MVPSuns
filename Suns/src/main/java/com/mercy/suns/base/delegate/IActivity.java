@@ -1,5 +1,5 @@
 /**
- * Copyright 2017 JessYan
+ * Copyright 2018 Sun
  * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,8 +21,8 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentManager;
 
-import com.mercy.suns.base.BaseActivity;
-import com.mercy.suns.base.BaseFragment;
+import com.mercy.suns.base.BaseMvpActivity;
+import com.mercy.suns.base.BaseMvpFragment;
 import com.mercy.suns.integration.ActivityLifecycle;
 import com.mercy.suns.integration.cache.Cache;
 import com.mercy.suns.integration.cache.LruCache;
@@ -33,7 +33,7 @@ import org.simple.eventbus.EventBus;
  * ================================================
  * 框架要求框架中的每个 {@link Activity} 都需要实现此类,以满足规范
  *
- * @see BaseActivity
+ * @see BaseMvpActivity
  * Created by Sun on 2018/2/2
  * ================================================
  */
@@ -73,7 +73,7 @@ public interface IActivity {
 
     /**
      * 这个 Activity 是否会使用 Fragment,框架会根据这个属性判断是否注册 {@link FragmentManager.FragmentLifecycleCallbacks}
-     * 如果返回{@code false},那意味着这个 Activity 不需要绑定 Fragment,那你再在这个 Activity 中绑定继承于 {@link BaseFragment} 的 Fragment 将不起任何作用
+     * 如果返回{@code false},那意味着这个 Activity 不需要绑定 Fragment,那你再在这个 Activity 中绑定继承于 {@link BaseMvpFragment} 的 Fragment 将不起任何作用
      * @see ActivityLifecycle#registerFragmentCallbacks (Fragment 的注册过程)
      *
      * @return

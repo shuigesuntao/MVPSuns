@@ -1,5 +1,5 @@
 /**
-  * Copyright 2017 JessYan
+  * Copyright 2018 Sun
   *
   * Licensed under the Apache License, Version 2.0 (the "License");
   * you may not use this file except in compliance with the License.
@@ -22,15 +22,18 @@ import android.support.v4.app.FragmentManager;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.mercy.suns.integration.ActivityLifecycle;
 import com.mercy.suns.integration.FragmentLifecycle;
 import com.mercy.suns.integration.IRepositoryManager;
 import com.mercy.suns.integration.RepositoryManager;
 import com.mercy.suns.integration.cache.Cache;
 import com.mercy.suns.integration.cache.CacheType;
+import com.mercy.suns.integration.lifecycle.ActivityLifecycleForRxLifecycle;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Named;
 import javax.inject.Singleton;
 
 import dagger.Module;
@@ -82,8 +85,22 @@ public class SunsModule {
 
     @Singleton
     @Provides
-    public FragmentManager.FragmentLifecycleCallbacks provideFragmentLifecycle() {
-        return new FragmentLifecycle();
+    @Named("ActivityLifecycle")
+    public Application.ActivityLifecycleCallbacks provideActivityLifecycle(ActivityLifecycle activityLifecycle) {
+        return activityLifecycle;
+    }
+
+    @Singleton
+    @Provides
+    @Named("ActivityLifecycleForRxLifecycle")
+    public Application.ActivityLifecycleCallbacks proviceActivityLifecycleForRxLifecycle(ActivityLifecycleForRxLifecycle activityLifecycleForRxLifecycle) {
+        return activityLifecycleForRxLifecycle;
+    }
+
+    @Singleton
+    @Provides
+    public FragmentManager.FragmentLifecycleCallbacks provideFragmentLifecycle(FragmentLifecycle fragmentLifecycle) {
+        return fragmentLifecycle;
     }
 
     @Singleton

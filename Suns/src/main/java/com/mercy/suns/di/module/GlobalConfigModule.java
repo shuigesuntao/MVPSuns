@@ -1,5 +1,5 @@
 /**
-  * Copyright 2017 JessYan
+  * Copyright 2018 Sun
   *
   * Licensed under the Apache License, Version 2.0 (the "License");
   * you may not use this file except in compliance with the License.
@@ -204,9 +204,8 @@ public class GlobalConfigModule {
 
     @Singleton
     @Provides
-    @Nullable
     RequestInterceptor.Level providePrintHttpLogLevel() {
-        return mPrintHttpLogLevel;
+        return  mPrintHttpLogLevel == null ? RequestInterceptor.Level.ALL : mPrintHttpLogLevel;
     }
 
     @Singleton

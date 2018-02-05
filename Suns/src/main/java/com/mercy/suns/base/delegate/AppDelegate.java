@@ -1,5 +1,5 @@
 /**
- * Copyright 2017 JessYan
+ * Copyright 2018 Sun
  * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -41,6 +41,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 
 /**
  * ================================================
@@ -56,10 +57,14 @@ import javax.inject.Inject;
 public class AppDelegate implements App, AppLifecycles {
     private Application mApplication;
     private SunsComponent mSunsComponent;
+
     @Inject
-    protected ActivityLifecycle mActivityLifecycle;
+    @Named("ActivityLifecycle")
+    protected Application.ActivityLifecycleCallbacks mActivityLifecycle;
+
     @Inject
-    protected ActivityLifecycleForRxLifecycle mActivityLifecycleForRxLifecycle;
+    @Named("ActivityLifecycleForRxLifecycle")
+    protected Application.ActivityLifecycleCallbacks mActivityLifecycleForRxLifecycle;
 
     private List<ConfigModule> mModules;
     private List<AppLifecycles> mAppLifecycles = new ArrayList<>();

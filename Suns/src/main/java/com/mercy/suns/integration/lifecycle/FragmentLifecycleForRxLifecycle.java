@@ -1,5 +1,5 @@
 /**
-  * Copyright 2017 JessYan
+  * Copyright 2018 Sun
   *
   * Licensed under the Apache License, Version 2.0 (the "License");
   * you may not use this file except in compliance with the License.
@@ -24,6 +24,9 @@ import android.view.View;
 import com.trello.rxlifecycle2.RxLifecycle;
 import com.trello.rxlifecycle2.android.FragmentEvent;
 
+import javax.inject.Inject;
+import javax.inject.Singleton;
+
 import io.reactivex.subjects.Subject;
 
 /**
@@ -33,7 +36,13 @@ import io.reactivex.subjects.Subject;
  * Created by Sun on 2018/2/2
  * ================================================
  */
+@Singleton
 public class FragmentLifecycleForRxLifecycle extends FragmentManager.FragmentLifecycleCallbacks {
+
+    @Inject
+    public FragmentLifecycleForRxLifecycle(){
+
+    }
 
     @Override
     public void onFragmentAttached(FragmentManager fm, Fragment f, Context context) {

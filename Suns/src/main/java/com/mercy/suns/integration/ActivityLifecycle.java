@@ -1,5 +1,5 @@
 /**
- * Copyright 2017 JessYan
+ * Copyright 2018 Sun
  * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,7 +22,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 
-import com.mercy.suns.base.BaseFragment;
+import com.mercy.suns.base.BaseMvpFragment;
 import com.mercy.suns.base.delegate.ActivityDelegate;
 import com.mercy.suns.base.delegate.ActivityDelegateImpl;
 import com.mercy.suns.base.delegate.FragmentDelegate;
@@ -30,7 +30,6 @@ import com.mercy.suns.base.delegate.IActivity;
 import com.mercy.suns.integration.cache.Cache;
 import com.mercy.suns.utils.Preconditions;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -50,22 +49,20 @@ import dagger.Lazy;
 @Singleton
 public class ActivityLifecycle implements Application.ActivityLifecycleCallbacks {
 
-
-    private AppManager mAppManager;
-    private Application mApplication;
-    private Cache<String, Object> mExtras;
-    private Lazy<FragmentManager.FragmentLifecycleCallbacks> mFragmentLifecycle;
-    private Lazy<List<FragmentManager.FragmentLifecycleCallbacks>> mFragmentLifecycles;
+    @Inject
+    AppManager mAppManager;
+    @Inject
+    Application mApplication;
+    @Inject
+    Cache<String, Object> mExtras;
+    @Inject
+    Lazy<FragmentManager.FragmentLifecycleCallbacks> mFragmentLifecycle;
+    @Inject
+    Lazy<List<FragmentManager.FragmentLifecycleCallbacks>> mFragmentLifecycles;
 
     @Inject
-    public ActivityLifecycle(AppManager appManager, Application application, Cache<String, Object> extras,
-                             Lazy<FragmentManager.FragmentLifecycleCallbacks> fragmentLifecycle,
-                             Lazy<List<FragmentManager.FragmentLifecycleCallbacks>> fragmentLifecycles) {
-        this.mAppManager = appManager;
-        this.mApplication = application;
-        this.mExtras = extras;
-        this.mFragmentLifecycle = fragmentLifecycle;
-        this.mFragmentLifecycles = fragmentLifecycles;
+    public ActivityLifecycle(){
+
     }
 
     @Override
@@ -152,7 +149,7 @@ public class ActivityLifecycle implements Application.ActivityLifecycleCallbacks
     /**
      * 给每个 Activity 的所有 Fragment 设置监听其生命周期, Activity 可以通过 {@link IActivity#useFragment()}
      * 设置是否使用监听,如果这个 Activity 返回 false 的话,这个 Activity 下面的所有 Fragment 将不能使用 {@link FragmentDelegate}
-     * 意味着 {@link BaseFragment} 也不能使用
+     * 意味着 {@link BaseMvpFragment} 也不能使用
      *
      * @param activity
      */

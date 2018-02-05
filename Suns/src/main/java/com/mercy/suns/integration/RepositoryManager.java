@@ -1,5 +1,5 @@
 /**
- * Copyright 2017 JessYan
+ * Copyright 2018 Sun
  * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -43,23 +43,25 @@ import retrofit2.Retrofit;
  */
 @Singleton
 public class RepositoryManager implements IRepositoryManager {
-    private Lazy<Retrofit> mRetrofit;
-    private Lazy<RxCache> mRxCache;
-    private Application mApplication;
+    @Inject
+    Lazy<Retrofit> mRetrofit;
+    @Inject
+    Lazy<RxCache> mRxCache;
+    @Inject
+    Application mApplication;
+    @Inject
+    Cache.Factory mCacheFactory;
+    @Inject
+    ClientModule.RoomConfiguration mRoomConfiguration;
+
     private Cache<String, Object> mRetrofitServiceCache;
     private Cache<String, Object> mCacheServiceCache;
     private Cache<String, Object> mRoomDatabaseCache;
-    private Cache.Factory mCacheFactory;
-    private ClientModule.RoomConfiguration mRoomConfiguration;
+
 
     @Inject
-    public RepositoryManager(Lazy<Retrofit> retrofit, Lazy<RxCache> rxCache, Application application
-            , Cache.Factory cachefactory,ClientModule.RoomConfiguration roomConfiguration) {
-        this.mRetrofit = retrofit;
-        this.mRxCache = rxCache;
-        this.mApplication = application;
-        this.mCacheFactory = cachefactory;
-        this.mRoomConfiguration = roomConfiguration;
+    public RepositoryManager() {
+
     }
 
     /**

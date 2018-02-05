@@ -39,48 +39,20 @@ import io.reactivex.subjects.Subject;
 /**
  * ================================================
  * 因为 Java 只能单继承,所以如果要用到需要继承特定 @{@link Fragment} 的三方库,那你就需要自己自定义 @{@link Fragment}
- * 继承于这个特定的 @{@link Fragment},然后再按照 {@link BaseFragment} 的格式,将代码复制过去,记住一定要实现{@link IFragment}
+ * 继承于这个特定的 @{@link Fragment},然后再按照 {@link BaseMvpFragment} 的格式,将代码复制过去,记住一定要实现{@link IFragment}
  * Created by Sun on 2018/2/2
  * ================================================
  */
-public abstract class BaseFragment extends Fragment implements IFragment, FragmentLifecycleable {
-    protected final String TAG = this.getClass().getSimpleName();
-    private final BehaviorSubject<FragmentEvent> mLifecycleSubject = BehaviorSubject.create();
-    private Cache<String, Object> mCache;
+public abstract class BaseMvpFragment<P extends IPresenter> extends BaseFragment {
 
+    @Inject
+    protected P mPresenter;
 
-    @NonNull
     @Override
-    public synchronized Cache<String, Object> provideCache() {
-        if (mCache == null) {
-            mCache = SunsUtils.obtainAppComponentFromContext(getActivity()).cacheFactory().build(CacheType.FRAGMENT_CACHE);
-        }
-        return mCache;
-    }
-
-
-    @NonNull
-    @Override
-    public final Subject<FragmentEvent> provideLifecycleSubject() {
-        return mLifecycleSubject;
-    }
-
-
-    @Nullable
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return initView(inflater, container, savedInstanceState);
-    }
-
-
-    /**
-     * 是否使用eventBus,默认为使用(true)，
-     *
-     * @return
-     */
-    @Override
-    public boolean useEventBus() {
-        return true;
+    public void onDestroy() {
+        super.onDestroy();
+        if (mPresenter != null) mPresenter.onDestroy();//释放资源
+        this.mPresenter = null;
     }
 
 }
