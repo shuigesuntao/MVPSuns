@@ -30,6 +30,8 @@ import com.trello.rxlifecycle2.RxLifecycle;
 
 import org.simple.eventbus.EventBus;
 
+import javax.inject.Inject;
+
 import io.reactivex.functions.Action;
 
 /**

@@ -25,10 +25,12 @@ import javax.inject.Inject
  * @date 2018/1/31
  * UserPresenter
  */
-class UserPresenter @Inject constructor(model: UserContract.Model, rootView: UserContract.View,
-                                        var mErrorHandler: RxErrorHandler?,
-                                        var mAdapter: UserAdapter?) :
-        BasePresenter<UserContract.Model, UserContract.View>(model, rootView) {
+class UserPresenter @Inject constructor(model:UserContract.Model ,rootView:UserContract.View)
+    : BasePresenter<UserContract.Model, UserContract.View>(model,rootView) {
+    @Inject
+    var mErrorHandler: RxErrorHandler? = null
+    @Inject
+    var mAdapter: UserAdapter? = null
     private var lastUserId = 1
     private var isFirst = true
 

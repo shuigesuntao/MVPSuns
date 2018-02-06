@@ -24,12 +24,12 @@ import javax.inject.Inject
  * Created by sun on 2018/2/5
  * ================================================
  */
-class LoginPresenter @Inject constructor(model: LoginContract.Model,
-                                         rootView: LoginContract.View,
-                                         val application: Application,
-                                         val mErrorHandler: RxErrorHandler?) :
+class LoginPresenter @Inject constructor(model: LoginContract.Model, rootView: LoginContract.View) :
         BasePresenter<LoginContract.Model, LoginContract.View>(model, rootView) {
-
+    @Inject
+    var mApplication: Application? = null
+    @Inject
+    var mErrorHandler: RxErrorHandler? = null
 
     fun login(region: String, phone: String, password: String) {
         mModel.login(region, phone, password)
@@ -50,7 +50,7 @@ class LoginPresenter @Inject constructor(model: LoginContract.Model,
             RongIM.connect(token, object : RongIMClient.ConnectCallback() {
                 override fun onSuccess(s: String) {
                     Timber.tag("connect").e("onSuccess userId:$s")
-                    DataHelper.setStringSF(application, Const.LOGIN_ID, s)
+                    DataHelper.setStringSF(mApplication, Const.LOGIN_ID, s)
                     it.onNext(s)
                 }
 
@@ -64,5 +64,12 @@ class LoginPresenter @Inject constructor(model: LoginContract.Model,
                 }
             })
         }
+    }
+
+
+    override fun onDestroy() {
+        super.onDestroy()
+        this.mApplication = null
+        this.mErrorHandler = null
     }
 }
