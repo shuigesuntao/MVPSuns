@@ -47,7 +47,7 @@ fun <T> Observable<T>.execute(view: IView, subscriber: ErrorHandleSubscriber<T>)
 /**
  * 扩展Observable执行
  */
-fun <T> Observable<T>.executeWithLoding(view: IView, subscriber: ErrorHandleSubscriber<T>) {
+fun <T> Observable<T>.executeWithLoading(view: IView, subscriber: ErrorHandleSubscriber<T>) {
     this.subscribeOn(Schedulers.io())
             .doOnSubscribe { view.showLoading() }
             .subscribeOn(AndroidSchedulers.mainThread())

@@ -9,14 +9,13 @@ package sun.mercy.mvpsuns.demo.app
 class Const {
 
     companion object {
-        //七牛服务地址
-        const val LOGIN_ID = "loginid"
-        //本地服务器地址
-        const val SERVER_ADDRESS = "http://10.28.14.168:8080"
+
+        const val KEY_SP_USER_ID = "sp_user_id"
+        const val KEY_SP_TOKEN = "sp_token"
+        const val KEY_SP_PHONE = "sp_phone"
+        const val KEY_SP_PASSWORD = "sp_password"
         //SP表名
         const val TABLE_PREFS = "Kotlin_mall"
-        //Token Key
-        const val KEY_SP_TOKEN = "token"
     }
 
 }

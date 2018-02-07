@@ -155,9 +155,14 @@ dependencies {
     //gson
     api rootProject.ext.dependencies["gson"]
 
+    //multidex
+    api rootProject.ext.dependencies["multidex"]
+
     //test
     api rootProject.ext.dependencies["timber"]
     testApi rootProject.ext.dependencies["junit"]
+
+
 
 }
 

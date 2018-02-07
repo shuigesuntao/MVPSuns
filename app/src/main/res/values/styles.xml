@@ -9,6 +9,11 @@
         <item name="android:windowAnimationStyle">@style/AnimaActivity</item>
     </style>
 
+    <style name="Splash" parent="AppTheme">
+        <item name="android:windowBackground">@drawable/splash</item>
+        <item name="android:windowFullscreen">true</item>
+    </style>
+
     <style name="AnimaActivity">
         <item name="android:activityOpenEnterAnimation">@anim/translate_right_to_center</item>
         <item name="android:activityOpenExitAnimation">@anim/translate_center_to_left</item>
@@ -16,21 +21,22 @@
         <item name="android:activityCloseExitAnimation">@anim/translate_center_to_right</item>
     </style>
 
-    <style name="dialog" parent="@android:style/Theme.Dialog">
+
+    <style name="LightDialog" parent="@android:style/Theme.Dialog">
         <!--去掉边框-->
         <item name="android:windowFrame">@null</item>
         <!--悬浮-->
         <item name="android:windowIsFloating">true</item>
-        <!--半透明-->
-        <item name="android:windowIsTranslucent">false</item>
-        <!--不需要标题-->
-        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowAnimationStyle">@android:style/Animation.Dialog</item>
+        <item name="android:windowSoftInputMode">stateUnspecified|adjustPan
+        </item>
+    </style>
+    <style name="LightProgressDialog" parent="@style/LightDialog">
         <!--背景透明-->
         <item name="android:windowBackground">@android:color/transparent</item>
-        <!--允许模糊-->
-        <item name="android:backgroundDimEnabled">true</item>
-        <!--全屏幕-->
-        <item name="android:windowFullscreen">true</item>
+        <!--不需要标题-->
+        <item name="android:windowNoTitle">true</item>
     </style>
 
 </resources>
