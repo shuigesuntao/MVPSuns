@@ -14,7 +14,7 @@ import sun.mercy.mvpsuns.demo.R
  */
 object Loader {
 
-    private lateinit var mDialog: AppCompatDialog
+    private var mDialog: AppCompatDialog? = null
 
     /*
         创建加载对话框
@@ -23,23 +23,23 @@ object Loader {
         //样式引入
         mDialog = AppCompatDialog(context, R.style.LightProgressDialog)
         //设置布局
-        mDialog.setContentView(R.layout.progress_dialog)
-        mDialog.setCancelable(true)
-        mDialog.setCanceledOnTouchOutside(false)
-
-        val lp = mDialog.window.attributes
-        lp.dimAmount = 0.2f
-        lp.gravity = Gravity.CENTER
-        //设置属性
-        mDialog.show()
+        mDialog?.apply {
+            setContentView(R.layout.progress_dialog)
+            setCancelable(true)
+            setCanceledOnTouchOutside(false)
+            window.attributes.dimAmount = 0.2f
+            window.attributes.gravity =  Gravity.CENTER
+            show()
+        }
     }
 
     /*
         隐藏加载对话框，动画停止
      */
     fun stopLoading() {
-        if (mDialog.isShowing) {
-            mDialog.cancel()
+        mDialog?.apply {
+            dismiss()
+            mDialog = null
         }
     }
 }
