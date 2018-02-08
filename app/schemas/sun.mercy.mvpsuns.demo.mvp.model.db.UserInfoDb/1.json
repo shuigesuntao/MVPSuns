@@ -1,0 +1,393 @@
+{
+  "formatVersion": 1,
+  "database": {
+    "version": 1,
+    "identityHash": "cf1ea03b9bcb36e131c317aeae5b1e31",
+    "entities": [
+      {
+        "tableName": "users",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `name` TEXT NOT NULL, `avatar_url` TEXT NOT NULL, PRIMARY KEY(`id`))",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "login",
+            "columnName": "name",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "avatarUrl",
+            "columnName": "avatar_url",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "id"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "groups",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`groups_id` TEXT NOT NULL, `name` TEXT NOT NULL, `portrait_uri` TEXT NOT NULL, `display_name` TEXT NOT NULL, `role` TEXT NOT NULL, `bulletin` TEXT NOT NULL, `timestamp` TEXT NOT NULL, `name_spelling` TEXT NOT NULL, PRIMARY KEY(`groups_id`))",
+        "fields": [
+          {
+            "fieldPath": "groupsId",
+            "columnName": "groups_id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "name",
+            "columnName": "name",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "portraitUri",
+            "columnName": "portrait_uri",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "displayName",
+            "columnName": "display_name",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "role",
+            "columnName": "role",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "bulletin",
+            "columnName": "bulletin",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "timestamp",
+            "columnName": "timestamp",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "nameSpelling",
+            "columnName": "name_spelling",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "groups_id"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [
+          {
+            "name": "index_groups_name",
+            "unique": false,
+            "columnNames": [
+              "name"
+            ],
+            "createSql": "CREATE  INDEX `index_groups_name` ON `${TABLE_NAME}` (`name`)"
+          },
+          {
+            "name": "index_groups_name_spelling",
+            "unique": false,
+            "columnNames": [
+              "name_spelling"
+            ],
+            "createSql": "CREATE  INDEX `index_groups_name_spelling` ON `${TABLE_NAME}` (`name_spelling`)"
+          }
+        ],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "group_member",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`groups_id` TEXT NOT NULL, `user_id` TEXT NOT NULL, `name` TEXT NOT NULL, `portrait_uri` TEXT NOT NULL, `display_name` TEXT NOT NULL, `name_spelling` TEXT NOT NULL, `display_name_spelling` TEXT NOT NULL, `group_name` TEXT NOT NULL, `group_name_spelling` TEXT NOT NULL, `group_portrait_uri` TEXT NOT NULL, PRIMARY KEY(`groups_id`, `user_id`))",
+        "fields": [
+          {
+            "fieldPath": "groupsId",
+            "columnName": "groups_id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "userId",
+            "columnName": "user_id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "name",
+            "columnName": "name",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "portraitUri",
+            "columnName": "portrait_uri",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "displayName",
+            "columnName": "display_name",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "nameSpelling",
+            "columnName": "name_spelling",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "displayNameSpelling",
+            "columnName": "display_name_spelling",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "groupName",
+            "columnName": "group_name",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "groupNameSpelling",
+            "columnName": "group_name_spelling",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "groupPortraitUri",
+            "columnName": "group_portrait_uri",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "groups_id",
+            "user_id"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [
+          {
+            "name": "index_group_member_name",
+            "unique": false,
+            "columnNames": [
+              "name"
+            ],
+            "createSql": "CREATE  INDEX `index_group_member_name` ON `${TABLE_NAME}` (`name`)"
+          },
+          {
+            "name": "index_group_member_display_name",
+            "unique": false,
+            "columnNames": [
+              "display_name"
+            ],
+            "createSql": "CREATE  INDEX `index_group_member_display_name` ON `${TABLE_NAME}` (`display_name`)"
+          },
+          {
+            "name": "index_group_member_name_spelling",
+            "unique": false,
+            "columnNames": [
+              "name_spelling"
+            ],
+            "createSql": "CREATE  INDEX `index_group_member_name_spelling` ON `${TABLE_NAME}` (`name_spelling`)"
+          },
+          {
+            "name": "index_group_member_display_name_spelling",
+            "unique": false,
+            "columnNames": [
+              "display_name_spelling"
+            ],
+            "createSql": "CREATE  INDEX `index_group_member_display_name_spelling` ON `${TABLE_NAME}` (`display_name_spelling`)"
+          },
+          {
+            "name": "index_group_member_group_name",
+            "unique": false,
+            "columnNames": [
+              "group_name"
+            ],
+            "createSql": "CREATE  INDEX `index_group_member_group_name` ON `${TABLE_NAME}` (`group_name`)"
+          },
+          {
+            "name": "index_group_member_group_name_spelling",
+            "unique": false,
+            "columnNames": [
+              "group_name_spelling"
+            ],
+            "createSql": "CREATE  INDEX `index_group_member_group_name_spelling` ON `${TABLE_NAME}` (`group_name_spelling`)"
+          }
+        ],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "friend",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`user_id` TEXT NOT NULL, `name` TEXT NOT NULL, `portrait_uri` TEXT NOT NULL, `display_name` TEXT NOT NULL, `region` TEXT NOT NULL, `phone_number` TEXT NOT NULL, `status` TEXT NOT NULL, `timestamp` INTEGER NOT NULL, `letters` TEXT NOT NULL, `name_spelling` TEXT NOT NULL, `display_name_spelling` TEXT NOT NULL, PRIMARY KEY(`user_id`))",
+        "fields": [
+          {
+            "fieldPath": "userId",
+            "columnName": "user_id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "name",
+            "columnName": "name",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "portraitUri",
+            "columnName": "portrait_uri",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "displayName",
+            "columnName": "display_name",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "region",
+            "columnName": "region",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "phoneNumber",
+            "columnName": "phone_number",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "status",
+            "columnName": "status",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "timestamp",
+            "columnName": "timestamp",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "letters",
+            "columnName": "letters",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "nameSpelling",
+            "columnName": "name_spelling",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "displayNameSpelling",
+            "columnName": "display_name_spelling",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "user_id"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [
+          {
+            "name": "index_friend_name",
+            "unique": false,
+            "columnNames": [
+              "name"
+            ],
+            "createSql": "CREATE  INDEX `index_friend_name` ON `${TABLE_NAME}` (`name`)"
+          },
+          {
+            "name": "index_friend_display_name",
+            "unique": false,
+            "columnNames": [
+              "display_name"
+            ],
+            "createSql": "CREATE  INDEX `index_friend_display_name` ON `${TABLE_NAME}` (`display_name`)"
+          },
+          {
+            "name": "index_friend_name_spelling",
+            "unique": false,
+            "columnNames": [
+              "name_spelling"
+            ],
+            "createSql": "CREATE  INDEX `index_friend_name_spelling` ON `${TABLE_NAME}` (`name_spelling`)"
+          },
+          {
+            "name": "index_friend_display_name_spelling",
+            "unique": false,
+            "columnNames": [
+              "display_name_spelling"
+            ],
+            "createSql": "CREATE  INDEX `index_friend_display_name_spelling` ON `${TABLE_NAME}` (`display_name_spelling`)"
+          }
+        ],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "black_list",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`userId` TEXT NOT NULL, `status` TEXT NOT NULL, `timestamp` INTEGER NOT NULL, PRIMARY KEY(`userId`))",
+        "fields": [
+          {
+            "fieldPath": "userId",
+            "columnName": "userId",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "status",
+            "columnName": "status",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "timestamp",
+            "columnName": "timestamp",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "userId"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [],
+        "foreignKeys": []
+      }
+    ],
+    "setupQueries": [
+      "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"cf1ea03b9bcb36e131c317aeae5b1e31\")"
+    ]
+  }
+}

@@ -4,7 +4,7 @@ import io.reactivex.Observable
 import io.reactivex.functions.Function
 import sun.mercy.mvpsuns.demo.app.BaseException
 import sun.mercy.mvpsuns.demo.mvp.model.api.Api
-import sun.mercy.mvpsuns.demo.mvp.model.api.protocol.BaseResp
+import sun.mercy.mvpsuns.demo.mvp.model.resp.BaseResp
 
 /**
  * ================================================

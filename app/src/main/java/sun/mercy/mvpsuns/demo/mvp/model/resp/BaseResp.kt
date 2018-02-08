@@ -1,6 +1,4 @@
-package sun.mercy.mvpsuns.demo.mvp.model.api.protocol
-
-import sun.mercy.mvpsuns.demo.mvp.model.api.Api
+package sun.mercy.mvpsuns.demo.mvp.model.resp
 
 
 /**

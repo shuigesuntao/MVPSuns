@@ -14,6 +14,8 @@ class Const {
         const val KEY_SP_TOKEN = "sp_token"
         const val KEY_SP_PHONE = "sp_phone"
         const val KEY_SP_PASSWORD = "sp_password"
+        const val KEY_SP_NICKNAME = "sp_nickname"
+        const val KEY_SP_PORTRAIT = "sp_portrait"
         //SP表名
         const val TABLE_PREFS = "Kotlin_mall"
     }

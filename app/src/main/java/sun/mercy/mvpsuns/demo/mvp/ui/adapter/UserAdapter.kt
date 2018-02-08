@@ -5,7 +5,7 @@ import com.chad.library.adapter.base.BaseViewHolder
 import com.mercy.suns.http.imageloader.glide.ImageConfigImpl
 import com.mercy.suns.utils.SunsUtils
 import sun.mercy.mvpsuns.demo.R
-import sun.mercy.mvpsuns.demo.mvp.model.entity.User
+import sun.mercy.mvpsuns.demo.mvp.model.db.entity.User
 
 
 /**

@@ -5,7 +5,7 @@ import io.rx_cache2.DynamicKey
 import io.rx_cache2.EvictProvider
 import io.rx_cache2.LifeCache
 import io.rx_cache2.Reply
-import sun.mercy.mvpsuns.demo.mvp.model.entity.User
+import sun.mercy.mvpsuns.demo.mvp.model.db.entity.User
 
 import java.util.concurrent.TimeUnit
 

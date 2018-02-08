@@ -11,7 +11,7 @@ import io.reactivex.schedulers.Schedulers
 import me.jessyan.rxerrorhandler.handler.ErrorHandleSubscriber
 import sun.mercy.mvpsuns.demo.app.rx.BaseFunc
 import sun.mercy.mvpsuns.demo.app.rx.BaseFuncBoolean
-import sun.mercy.mvpsuns.demo.mvp.model.api.protocol.BaseResp
+import sun.mercy.mvpsuns.demo.mvp.model.resp.BaseResp
 import sun.mercy.mvpsuns.demo.mvp.ui.widget.DefaultTextWatcher
 
 /**

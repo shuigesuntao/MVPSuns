@@ -15,7 +15,7 @@ import me.jessyan.rxerrorhandler.handler.ErrorHandleSubscriber
 import me.jessyan.rxerrorhandler.handler.RetryWithDelay
 import sun.mercy.mvpsuns.demo.app.utils.execute
 import sun.mercy.mvpsuns.demo.mvp.contract.UserContract
-import sun.mercy.mvpsuns.demo.mvp.model.entity.User
+import sun.mercy.mvpsuns.demo.mvp.model.db.entity.User
 import sun.mercy.mvpsuns.demo.mvp.ui.adapter.UserAdapter
 import timber.log.Timber
 import javax.inject.Inject

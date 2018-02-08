@@ -1,6 +1,7 @@
 package sun.mercy.mvpsuns.demo.mvp.presenter
 
 import android.app.Application
+import android.net.Uri
 import com.mercy.suns.mvp.BasePresenter
 import com.mercy.suns.utils.DataHelper
 import io.reactivex.Observable
@@ -8,12 +9,15 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import io.rong.imkit.RongIM
 import io.rong.imlib.RongIMClient
+import io.rong.imlib.model.UserInfo
 import me.jessyan.rxerrorhandler.core.RxErrorHandler
 import me.jessyan.rxerrorhandler.handler.ErrorHandleSubscriber
 import sun.mercy.mvpsuns.demo.app.BaseException
 import sun.mercy.mvpsuns.demo.app.Const
 import sun.mercy.mvpsuns.demo.mvp.contract.LoginContract
-import sun.mercy.mvpsuns.demo.mvp.model.entity.UserInfo
+import sun.mercy.mvpsuns.demo.mvp.model.api.Api
+import sun.mercy.mvpsuns.demo.mvp.model.resp.BaseResp
+import sun.mercy.mvpsuns.demo.mvp.model.resp.UserInfoResp
 import timber.log.Timber
 
 
@@ -27,10 +31,8 @@ import javax.inject.Inject
  */
 class LoginPresenter @Inject constructor(model: LoginContract.Model, rootView: LoginContract.View, var mApplication: Application?, var mErrorHandler: RxErrorHandler?) :
         BasePresenter<LoginContract.Model, LoginContract.View>(model, rootView) {
-//    @Inject
-//    var mApplication: Application? = null
-//    @Inject
-//    var mErrorHandler: RxErrorHandler? = null
+
+    private var mUserId:String? = null
 
     fun login(region: String, phone: String, password: String) {
         mModel.login(region, phone, password)
@@ -41,16 +43,32 @@ class LoginPresenter @Inject constructor(model: LoginContract.Model, rootView: L
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .observeOn(Schedulers.io())
                 .flatMap { mModel.getUserInfoById(it)}
-                .observeOn(AndroidSchedulers.mainThread())
-                .doFinally { mRootView.hideLoading() }
-                .subscribe(object :ErrorHandleSubscriber<UserInfo>(mErrorHandler){
-                    override fun onNext(t: UserInfo) {
+                .flatMap {
+                    if(it.code == Api.RequestSuccess){
+                        if(it.result.portraitUri.isEmpty().not()){
+                            //TODO 如果没设置头像 生成默认头像
+                        }
+                        //sp存储
+                        val nickName = it.result.nickname
+                        val portraitUri = it.result.portraitUri
                         DataHelper.setStringSF(mApplication, Const.KEY_SP_PHONE, phone)
                         DataHelper.setStringSF(mApplication, Const.KEY_SP_PASSWORD, password)
-                        mRootView.onLoginSuccess(t)
-                    }
-                })
+                        DataHelper.setStringSF(mApplication, Const.KEY_SP_NICKNAME, nickName)
+                        DataHelper.setStringSF(mApplication, Const.KEY_SP_PORTRAIT, portraitUri)
+                        RongIM.getInstance().refreshUserInfoCache(UserInfo(mUserId, nickName, Uri.parse(portraitUri)))
 
+                    }
+                    mModel.fetchFriends()
+                }
+//                .flatMap {
+//                    if (it != null && it.size > 0) {
+//                        mModel.deleteFriendFromDb()
+//                        mModel.addFriends(it)
+//                    }
+//                    mGetAllUserInfoState = mGetAllUserInfoState or FRIEND
+//                }
+                .observeOn(AndroidSchedulers.mainThread())
+                .doFinally { mRootView.hideLoading() }
 
     }
 
@@ -61,6 +79,7 @@ class LoginPresenter @Inject constructor(model: LoginContract.Model, rootView: L
             RongIM.connect(token, object : RongIMClient.ConnectCallback() {
                 override fun onSuccess(userId: String) {
                     Timber.tag("Sun").e("onSuccess userId:$userId")
+                    mUserId = userId
                     DataHelper.setStringSF(mApplication, Const.KEY_SP_USER_ID, userId)
                     it.onNext(userId)
                     it.onComplete()

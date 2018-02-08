@@ -1,4 +1,4 @@
-package sun.mercy.mvpsuns.demo.mvp.model.entity
+package sun.mercy.mvpsuns.demo.mvp.model.db.entity
 
 import android.arch.persistence.room.Entity
 import android.arch.persistence.room.PrimaryKey

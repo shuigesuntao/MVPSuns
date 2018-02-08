@@ -1,17 +1,11 @@
 package sun.mercy.mvpsuns.demo.app
 
 import android.content.Context
-import android.text.TextUtils
-import com.google.gson.reflect.TypeToken
 import com.mercy.suns.http.GlobalHttpHandler
-import com.mercy.suns.http.log.RequestInterceptor
-import com.mercy.suns.utils.SunsUtils
 
 import okhttp3.Interceptor
 import okhttp3.Request
 import okhttp3.Response
-import sun.mercy.mvpsuns.demo.mvp.model.entity.User
-import timber.log.Timber
 
 /**
  * @author sun

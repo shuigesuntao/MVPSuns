@@ -2,12 +2,13 @@ package sun.mercy.mvpsuns.demo.mvp.model.api.service
 
 import io.reactivex.Observable
 import retrofit2.http.*
-import sun.mercy.mvpsuns.demo.mvp.model.api.protocol.BaseResp
+import sun.mercy.mvpsuns.demo.mvp.model.resp.BaseResp
 import sun.mercy.mvpsuns.demo.mvp.model.api.protocol.LoginReq
-import sun.mercy.mvpsuns.demo.mvp.model.entity.LoginResp
 
-import sun.mercy.mvpsuns.demo.mvp.model.entity.User
-import sun.mercy.mvpsuns.demo.mvp.model.entity.UserInfo
+import sun.mercy.mvpsuns.demo.mvp.model.db.entity.User
+import sun.mercy.mvpsuns.demo.mvp.model.resp.LoginResp
+import sun.mercy.mvpsuns.demo.mvp.model.resp.RelationshipResp
+import sun.mercy.mvpsuns.demo.mvp.model.resp.UserInfoResp
 
 /**
  * @author sun
@@ -42,5 +43,11 @@ interface AccountService {
      * 根据 id 查询用户信息
      */
     @GET("/user/{userid}")
-    fun getUserInfoById(@Path("userid") userId:String):Observable<BaseResp<UserInfo>>
+    fun getUserInfoById(@Path("userid") userId:String):Observable<BaseResp<UserInfoResp>>
+
+    /**
+     * 获取发生过用户关系的列表
+     */
+    @GET("friendship/all")
+    fun getAllUserRelationship():Observable<BaseResp<List<RelationshipResp>>>
 }

@@ -7,7 +7,7 @@ import dagger.Module
 import dagger.Provides
 import sun.mercy.mvpsuns.demo.mvp.contract.UserContract
 import sun.mercy.mvpsuns.demo.mvp.model.UserModel
-import sun.mercy.mvpsuns.demo.mvp.model.entity.User
+import sun.mercy.mvpsuns.demo.mvp.model.db.entity.User
 import sun.mercy.mvpsuns.demo.mvp.ui.activity.UserActivity
 import sun.mercy.mvpsuns.demo.mvp.ui.adapter.UserAdapter
 
