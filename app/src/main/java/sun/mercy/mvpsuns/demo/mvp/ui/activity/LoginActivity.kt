@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import com.mercy.suns.base.BaseMvpActivity
+import com.mercy.suns.utils.SunsUtils
 import io.rong.imkit.MainActivity
 import kotlinx.android.synthetic.main.activity_login.*
 import sun.mercy.mvpsuns.demo.R
@@ -37,7 +38,7 @@ class LoginActivity : BaseMvpActivity<LoginPresenter>(), LoginContract.View, Vie
     }
 
     override fun showMessage(message: String?) {
-
+        SunsUtils.snackbarText(message)
     }
 
 

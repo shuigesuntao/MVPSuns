@@ -2,13 +2,10 @@ package sun.mercy.mvpsuns.demo.mvp.model.api.service
 
 import io.reactivex.Observable
 import retrofit2.http.*
-import sun.mercy.mvpsuns.demo.mvp.model.resp.BaseResp
 import sun.mercy.mvpsuns.demo.mvp.model.api.protocol.LoginReq
 
 import sun.mercy.mvpsuns.demo.mvp.model.db.entity.User
-import sun.mercy.mvpsuns.demo.mvp.model.resp.LoginResp
-import sun.mercy.mvpsuns.demo.mvp.model.resp.RelationshipResp
-import sun.mercy.mvpsuns.demo.mvp.model.resp.UserInfoResp
+import sun.mercy.mvpsuns.demo.mvp.model.resp.*
 
 /**
  * @author sun
@@ -42,12 +39,31 @@ interface AccountService {
     /**
      * 根据 id 查询用户信息
      */
-    @GET("/user/{userid}")
-    fun getUserInfoById(@Path("userid") userId:String):Observable<BaseResp<UserInfoResp>>
+    @GET("/user/{userId}")
+    fun getUserInfoById(@Path("userId") userId:String):Observable<BaseResp<UserInfoResp>>
 
     /**
-     * 获取发生过用户关系的列表
+     * 获取好友列表
      */
     @GET("friendship/all")
-    fun getAllUserRelationship():Observable<BaseResp<List<RelationshipResp>>>
+    fun getAllFriends():Observable<BaseResp<List<FriendResp>>>
+
+    /**
+     * 获取群列表
+     */
+    @GET("user/groups")
+    fun getGroups():Observable<BaseResp<List<GroupsResp>>>
+
+    /**
+     * 获取群成员列表
+     */
+    @GET("group/{groupId}/members")
+    fun getGroupMembers(@Path("groupId") groupId:String):Observable<BaseResp<List<GroupMemberResp>>>
+
+
+    /**
+     * 获取黑名单成员列表
+     */
+    @GET("user/blacklist")
+    fun getBlackList():Observable<BaseResp<List<BlackListResp>>>
 }

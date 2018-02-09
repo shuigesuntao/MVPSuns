@@ -34,6 +34,38 @@ class LoginPresenter @Inject constructor(model: LoginContract.Model, rootView: L
 
     private var mUserId:String? = null
 
+    /**
+     * 用户信息全部未同步
+     */
+    private val NONE = 0//00000
+    /**
+     * 好友信息同步成功
+     */
+    private val FRIEND = 1//00001
+    /**
+     * 群组信息同步成功
+     */
+    private val GROUPS = 2//00010
+    /**
+     * 群成员信息部分同步成功,n个群组n次访问网络,存在部分同步的情况
+     */
+    private val PARTGROUPMEMBERS = 4//00100
+    /**
+     * 群成员信息同步成功
+     */
+    private val GROUPMEMBERS = 8//01000
+    /**
+     * 黑名单信息同步成功
+     */
+    private val BLACKLIST = 16//10000
+    /**
+     * 用户信息全部同步成功
+     */
+    private val ALL = 27//11011
+
+    private val mGetAllUserInfoState = null
+
+
     fun login(region: String, phone: String, password: String) {
         mModel.login(region, phone, password)
                 .map { it.token }
@@ -43,33 +75,38 @@ class LoginPresenter @Inject constructor(model: LoginContract.Model, rootView: L
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .observeOn(Schedulers.io())
                 .flatMap { mModel.getUserInfoById(it)}
-                .flatMap {
-                    if(it.code == Api.RequestSuccess){
-                        if(it.result.portraitUri.isEmpty().not()){
-                            //TODO 如果没设置头像 生成默认头像
-                        }
-                        //sp存储
-                        val nickName = it.result.nickname
-                        val portraitUri = it.result.portraitUri
-                        DataHelper.setStringSF(mApplication, Const.KEY_SP_PHONE, phone)
-                        DataHelper.setStringSF(mApplication, Const.KEY_SP_PASSWORD, password)
-                        DataHelper.setStringSF(mApplication, Const.KEY_SP_NICKNAME, nickName)
-                        DataHelper.setStringSF(mApplication, Const.KEY_SP_PORTRAIT, portraitUri)
-                        RongIM.getInstance().refreshUserInfoCache(UserInfo(mUserId, nickName, Uri.parse(portraitUri)))
-
-                    }
-                    mModel.fetchFriends()
-                }
-//                .flatMap {
-//                    if (it != null && it.size > 0) {
-//                        mModel.deleteFriendFromDb()
-//                        mModel.addFriends(it)
-//                    }
-//                    mGetAllUserInfoState = mGetAllUserInfoState or FRIEND
-//                }
                 .observeOn(AndroidSchedulers.mainThread())
                 .doFinally { mRootView.hideLoading() }
+                .subscribe(object : ErrorHandleSubscriber<BaseResp<UserInfoResp>>(mErrorHandler){
+                    override fun onNext(t: BaseResp<UserInfoResp>) {
+                        if(t.code == Api.RequestSuccess){
+                            if(t.result.portraitUri.isEmpty().not()){
+                                //TODO 如果没设置头像 生成默认头像
+                            }
+                            //sp存储
+                            val nickName = t.result.nickname
+                            val portraitUri = t.result.portraitUri
+                            DataHelper.setStringSF(mApplication, Const.KEY_SP_NICKNAME, nickName)
+                            DataHelper.setStringSF(mApplication, Const.KEY_SP_PORTRAIT, portraitUri)
+                            RongIM.getInstance().refreshUserInfoCache(UserInfo(mUserId, nickName, Uri.parse(portraitUri)))
+                        }
+                        getAllUserInfo()
+                        DataHelper.setStringSF(mApplication, Const.KEY_SP_PHONE, phone)
+                        DataHelper.setStringSF(mApplication, Const.KEY_SP_PASSWORD, password)
+                        mRootView.onLoginSuccess()
+                    }
 
+                })
+    }
+
+    private fun getAllUserInfo() {
+//        if(){
+//
+//        }
+    }
+
+    private fun needGetAllUserInfo(): Boolean {
+        return mGetAllUserInfoState == NONE
     }
 
 

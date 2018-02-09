@@ -8,12 +8,9 @@ import com.mercy.suns.mvp.BaseModel
 import io.reactivex.Observable
 import sun.mercy.mvpsuns.demo.app.utils.convert
 import sun.mercy.mvpsuns.demo.mvp.contract.LoginContract
-import sun.mercy.mvpsuns.demo.mvp.model.resp.BaseResp
 import sun.mercy.mvpsuns.demo.mvp.model.api.protocol.LoginReq
 import sun.mercy.mvpsuns.demo.mvp.model.api.service.AccountService
-import sun.mercy.mvpsuns.demo.mvp.model.resp.LoginResp
-import sun.mercy.mvpsuns.demo.mvp.model.resp.RelationshipResp
-import sun.mercy.mvpsuns.demo.mvp.model.resp.UserInfoResp
+import sun.mercy.mvpsuns.demo.mvp.model.resp.*
 
 import timber.log.Timber
 import javax.inject.Inject
@@ -42,9 +39,24 @@ class LoginModel @Inject constructor(repositoryManager: IRepositoryManager):
                 .getUserInfoById(userId)
     }
 
-    override fun fetchFriends(): Observable<List<RelationshipResp>> {
+    override fun fetchFriends(): Observable<List<FriendResp>> {
         return mRepositoryManager.obtainRetrofitService(AccountService::class.java)
-                .getAllUserRelationship().convert()
+                .getAllFriends().convert()
+    }
+
+    override fun fetchGroups(): Observable<List<GroupsResp>> {
+        return mRepositoryManager.obtainRetrofitService(AccountService::class.java)
+                .getGroups().convert()
+    }
+
+    override fun fetchGroupMembers(groupId:String): Observable<List<GroupMemberResp>> {
+        return mRepositoryManager.obtainRetrofitService(AccountService::class.java)
+                .getGroupMembers(groupId).convert()
+    }
+
+    override fun fetchBlackList(): Observable<List<BlackListResp>> {
+        return mRepositoryManager.obtainRetrofitService(AccountService::class.java)
+                .getBlackList().convert()
     }
 
 
