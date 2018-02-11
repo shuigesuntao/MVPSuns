@@ -1,32 +1,38 @@
 package sun.mercy.mvpsuns.demo.mvp.model.db.entity
 
 
-import android.arch.persistence.room.ColumnInfo
-import android.arch.persistence.room.Entity
-import android.arch.persistence.room.PrimaryKey
+import io.objectbox.annotation.Entity
+import io.objectbox.annotation.Id
+import io.objectbox.annotation.Index
+import io.objectbox.annotation.NameInDb
 
 /**
  * @author sun
  * @date 2018/2/8
  * Friend
  */
-@Entity(tableName = "friend")
-data class Friend(@PrimaryKey
-                  @ColumnInfo(name = "user_id")
+@Entity
+data class Friend(@Id
+                  var id: Long = 0,
+                  @NameInDb("user_id")
+                  @Index
                   val userId: String,
-                  @ColumnInfo(index = true)
+                  @Index
                   val name: String,
-                  @ColumnInfo(name = "portrait_uri")
+                  @NameInDb("portrait_uri")
                   var portraitUri: String = "",
-                  @ColumnInfo(name = "display_name", index = true)
+                  @NameInDb("display_name")
+                  @Index
                   val displayName: String = "",
                   val region: String = "",
-                  @ColumnInfo(name = "phone_number")
+                  @NameInDb("phone_number")
                   val phoneNumber: String = "",
                   val status: String = "",
                   val timestamp: Long = 0,
                   val letters: String = "",
-                  @ColumnInfo(name = "name_spelling", index = true)
+                  @NameInDb("name_spelling")
+                  @Index
                   val nameSpelling: String? = "",
-                  @ColumnInfo(name = "display_name_spelling", index = true)
+                  @NameInDb("display_name_spelling")
+                  @Index
                   val displayNameSpelling: String? = "")

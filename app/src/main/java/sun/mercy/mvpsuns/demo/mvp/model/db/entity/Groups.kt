@@ -1,26 +1,30 @@
 package sun.mercy.mvpsuns.demo.mvp.model.db.entity
 
-import android.arch.persistence.room.ColumnInfo
-import android.arch.persistence.room.Entity
-import android.arch.persistence.room.PrimaryKey
+import io.objectbox.annotation.Entity
+import io.objectbox.annotation.Id
+import io.objectbox.annotation.Index
+import io.objectbox.annotation.NameInDb
 
 /**
  * @author sun
  * @date 2018/2/8
  * Groups
  */
-@Entity(tableName = "groups")
-data class Groups(@PrimaryKey
-                  @ColumnInfo(name = "groups_id")
+@Entity
+data class Groups(@Id
+                  var id:Long = 0,
+                  @NameInDb("groups_id")
+                  @Index
                   val groupsId: String,
-                  @ColumnInfo(index = true)
+                  @Index
                   val name:String,
-                  @ColumnInfo(name = "portrait_uri")
+                  @NameInDb("portrait_uri")
                   val portraitUri:String,
-                  @ColumnInfo(name = "display_name")
+                  @NameInDb("display_name")
                   val displayName: String = "",
                   val role: String,
                   val bulletin: String = "",
                   val timestamp: String = "",
-                  @ColumnInfo(name = "name_spelling",index = true)
+                  @NameInDb("name_spelling")
+                  @Index
                   val nameSpelling: String = "")

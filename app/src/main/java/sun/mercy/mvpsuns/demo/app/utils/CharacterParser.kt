@@ -260,7 +260,7 @@ object CharacterParser {
 
     fun generateFriendFromUserInfo(userInfo: UserInfo?): Friend? {
         return userInfo?.let {
-            Friend(it.userId, it.name, it.portraitUri.toString())
+            Friend(userId = it.userId, name = it.name, portraitUri = it.portraitUri.toString())
         }
     }
 

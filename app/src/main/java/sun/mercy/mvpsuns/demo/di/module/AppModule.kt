@@ -5,7 +5,9 @@ import com.mercy.suns.di.scope.AppScope
 
 import dagger.Module
 import dagger.Provides
+import io.objectbox.BoxStore
 import sun.mercy.mvpsuns.demo.app.UserInfoManager
+import sun.mercy.mvpsuns.demo.mvp.model.db.entity.MyObjectBox
 
 
 /**
@@ -14,10 +16,16 @@ import sun.mercy.mvpsuns.demo.app.UserInfoManager
  * AppModule
  */
 @Module(includes = arrayOf(ActivitiesModuleApp::class))
-class AppModule(private val application: Application){
+class AppModule{
     @AppScope
     @Provides
-    fun provideUserInfoManager() :UserInfoManager{
+    fun provideUserInfoManager(application: Application) :UserInfoManager{
         return UserInfoManager(application)
+    }
+
+    @AppScope
+    @Provides
+    fun provideBoxStore(application: Application) :BoxStore{
+        return MyObjectBox.builder().androidContext(application).build()
     }
 }

@@ -1,0 +1,228 @@
+{
+  "_note1": "KEEP THIS FILE! Check it into a version control system (VCS) like git.",
+  "_note2": "ObjectBox manages crucial IDs for your object model. See docs for details.",
+  "_note3": "If you have VCS merge conflicts, you must resolve them according to ObjectBox docs.",
+  "entities": [
+    {
+      "id": "1:7206724579258823952",
+      "lastPropertyId": "4:2763539170490493413",
+      "name": "BlackList",
+      "properties": [
+        {
+          "id": "1:1905242998919764056",
+          "name": "id"
+        },
+        {
+          "id": "2:7600891524673339665",
+          "name": "userId"
+        },
+        {
+          "id": "3:4513993027168527121",
+          "name": "status"
+        },
+        {
+          "id": "4:2763539170490493413",
+          "name": "timestamp"
+        }
+      ],
+      "relations": []
+    },
+    {
+      "id": "2:2175744872904298916",
+      "lastPropertyId": "9:6759279414795744237",
+      "name": "Groups",
+      "properties": [
+        {
+          "id": "1:193205000737032578",
+          "name": "id"
+        },
+        {
+          "id": "2:7683077093074616216",
+          "indexId": "1:884476994678345474",
+          "name": "groups_id"
+        },
+        {
+          "id": "3:3355866950840301180",
+          "indexId": "2:2800324611451992039",
+          "name": "name"
+        },
+        {
+          "id": "4:4581778067933094983",
+          "name": "portrait_uri"
+        },
+        {
+          "id": "5:6177688060105022242",
+          "name": "display_name"
+        },
+        {
+          "id": "6:1755644033144601389",
+          "name": "role"
+        },
+        {
+          "id": "7:1383769129784331445",
+          "name": "bulletin"
+        },
+        {
+          "id": "8:9194797829171097209",
+          "name": "timestamp"
+        },
+        {
+          "id": "9:6759279414795744237",
+          "indexId": "3:3567038636068797576",
+          "name": "name_spelling"
+        }
+      ],
+      "relations": []
+    },
+    {
+      "id": "3:8340396410830048345",
+      "lastPropertyId": "3:3049225710748453227",
+      "name": "User",
+      "properties": [
+        {
+          "id": "1:8332284877519351923",
+          "name": "id"
+        },
+        {
+          "id": "2:7407536516282467113",
+          "name": "name"
+        },
+        {
+          "id": "3:3049225710748453227",
+          "name": "avatar_url"
+        }
+      ],
+      "relations": []
+    },
+    {
+      "id": "4:5118622852335335352",
+      "lastPropertyId": "12:5406826911958922371",
+      "name": "Friend",
+      "properties": [
+        {
+          "id": "1:528823296917644800",
+          "name": "id"
+        },
+        {
+          "id": "2:5688603448390926141",
+          "indexId": "4:3593466561436349298",
+          "name": "user_id"
+        },
+        {
+          "id": "3:428900441869635658",
+          "indexId": "5:2000958414341721201",
+          "name": "name"
+        },
+        {
+          "id": "4:6504648406425653653",
+          "name": "portrait_uri"
+        },
+        {
+          "id": "5:8342247082626508540",
+          "indexId": "6:3888373045447307777",
+          "name": "display_name"
+        },
+        {
+          "id": "6:2098245448502891145",
+          "name": "region"
+        },
+        {
+          "id": "7:4169083876628302628",
+          "name": "phone_number"
+        },
+        {
+          "id": "8:328126752882687384",
+          "name": "status"
+        },
+        {
+          "id": "9:3892850334692098",
+          "name": "timestamp"
+        },
+        {
+          "id": "10:9026812806301780422",
+          "name": "letters"
+        },
+        {
+          "id": "11:7464888800573635511",
+          "indexId": "7:8350254110285004533",
+          "name": "name_spelling"
+        },
+        {
+          "id": "12:5406826911958922371",
+          "indexId": "8:8703584647349410112",
+          "name": "display_name_spelling"
+        }
+      ],
+      "relations": []
+    },
+    {
+      "id": "5:6062466519425619612",
+      "lastPropertyId": "11:3203562524975787559",
+      "name": "GroupMember",
+      "properties": [
+        {
+          "id": "1:3152412276013293500",
+          "name": "id"
+        },
+        {
+          "id": "2:2810815671981297731",
+          "name": "groups_id"
+        },
+        {
+          "id": "3:1860176597840262581",
+          "name": "user_id"
+        },
+        {
+          "id": "4:8207732410277080902",
+          "indexId": "9:2381986052734224950",
+          "name": "name"
+        },
+        {
+          "id": "5:593858795347226859",
+          "name": "portrait_uri"
+        },
+        {
+          "id": "6:7329496746066982153",
+          "indexId": "10:8163894809275215601",
+          "name": "display_name"
+        },
+        {
+          "id": "7:1934168843636215105",
+          "indexId": "11:5916301617236163823",
+          "name": "name_spelling"
+        },
+        {
+          "id": "8:1758819877070640921",
+          "indexId": "12:1565691641566711371",
+          "name": "display_name_spelling"
+        },
+        {
+          "id": "9:6679593850972878381",
+          "indexId": "13:1318623443656796895",
+          "name": "group_name"
+        },
+        {
+          "id": "10:3992061313369551164",
+          "indexId": "14:8389946286769909954",
+          "name": "group_name_spelling"
+        },
+        {
+          "id": "11:3203562524975787559",
+          "name": "group_portrait_uri"
+        }
+      ],
+      "relations": []
+    }
+  ],
+  "lastEntityId": "5:6062466519425619612",
+  "lastIndexId": "14:8389946286769909954",
+  "lastRelationId": "0:0",
+  "lastSequenceId": "0:0",
+  "modelVersion": 4,
+  "modelVersionParserMinimum": 4,
+  "retiredEntityUids": [],
+  "retiredIndexUids": [],
+  "retiredPropertyUids": [],
+  "retiredRelationUids": [],
+  "version": 1
+}

@@ -1,8 +1,6 @@
 package sun.mercy.mvpsuns.demo.app
 
 import android.app.Application
-import android.arch.persistence.db.SupportSQLiteDatabase
-import android.arch.persistence.room.migration.Migration
 import android.content.Context
 import android.os.Bundle
 import android.support.v4.app.Fragment
@@ -128,14 +126,7 @@ class GlobalConfiguration : ConfigModule {
                     // 否则请 return null;
                     null
                 }
-//                .roomConfiguration {//这里可以自定义配置 RoomDatabase，比如数据库迁移升级
-//                    _, roomBuilder ->
-//                    roomBuilder.addMigrations(object : Migration(2, 3) {
-//                        override fun migrate(database: SupportSQLiteDatabase) {
-//
-//                        }
-//                    })
-//                }
+
     }
 
     override fun injectAppLifecycle(context: Context, lifecycles: MutableList<AppLifecycles>) {

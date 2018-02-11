@@ -31,7 +31,7 @@ class UserPresenter @Inject constructor(model:UserContract.Model ,rootView:UserC
 //    var mErrorHandler: RxErrorHandler? = null
 //    @Inject
 //    var mAdapter: UserAdapter? = null
-    private var lastUserId = 1
+    private var lastUserId:Long = 1
     private var isFirst = true
 
     /**

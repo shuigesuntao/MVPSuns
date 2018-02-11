@@ -15,7 +15,6 @@
   */
 package com.mercy.suns.integration;
 
-import android.arch.persistence.room.RoomDatabase;
 import android.content.Context;
 
 import com.mercy.suns.mvp.IModel;
@@ -54,14 +53,5 @@ public interface IRepositoryManager {
     void clearAllCache();
 
     Context getContext();
-
-    /**
-     * 根据传入的 Class 获取对应的 RoomDatabase
-     *
-     * @param database
-     * @param <T>
-     * @return
-     */
-    <T extends RoomDatabase> T obtainRoomDatabase(Class<T> database, String dbName);
 
 }

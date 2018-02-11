@@ -16,13 +16,6 @@ android {
         versionCode rootProject.ext.android["versionCode"]
         versionName rootProject.ext.android["versionName"]
 
-        //Room
-        javaCompileOptions {
-            annotationProcessorOptions {
-                arguments = ["room.schemaLocation":
-                                     "$projectDir/schemas".toString()]
-            }
-        }
     }
     buildTypes {
         release {
@@ -124,19 +117,6 @@ dependencies {
     compileOnly rootProject.ext.dependencies["javax.annotation"]
     api(rootProject.ext.dependencies["dagger2-android"]) {
         exclude module: 'jsr305'
-    }
-
-    //room
-    api rootProject.ext.dependencies["room-runtime"]
-    annotationProcessor rootProject.ext.dependencies["room-compiler"]
-    testApi(rootProject.ext.dependencies["room-testing"]) {
-        exclude module: 'support-compat'
-        exclude module: 'support-annotations'
-        exclude module: 'support-core-utils'
-        exclude module: 'gson'
-    }
-    api(rootProject.ext.dependencies["room-rxjava2"]) {
-        exclude module: 'rxjava'
     }
 
     //dagger.android

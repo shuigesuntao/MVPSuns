@@ -14,6 +14,7 @@ import me.jessyan.rxerrorhandler.core.RxErrorHandler
 import me.jessyan.rxerrorhandler.handler.ErrorHandleSubscriber
 import sun.mercy.mvpsuns.demo.app.BaseException
 import sun.mercy.mvpsuns.demo.app.Const
+import sun.mercy.mvpsuns.demo.app.UserInfoManager
 import sun.mercy.mvpsuns.demo.mvp.contract.LoginContract
 import sun.mercy.mvpsuns.demo.mvp.model.api.Api
 import sun.mercy.mvpsuns.demo.mvp.model.resp.BaseResp
@@ -31,6 +32,9 @@ import javax.inject.Inject
  */
 class LoginPresenter @Inject constructor(model: LoginContract.Model, rootView: LoginContract.View, var mApplication: Application?, var mErrorHandler: RxErrorHandler?) :
         BasePresenter<LoginContract.Model, LoginContract.View>(model, rootView) {
+
+    @Inject
+    lateinit var mUserInfoManager: UserInfoManager
 
     private var mUserId:String? = null
 
@@ -76,6 +80,7 @@ class LoginPresenter @Inject constructor(model: LoginContract.Model, rootView: L
                     Timber.tag("Sun").e("onSuccess userId:$userId")
                     mUserId = userId
                     DataHelper.setStringSF(mApplication, Const.KEY_SP_USER_ID, userId)
+                    mUserInfoManager.openDB()
                     it.onNext(userId)
                     it.onComplete()
                 }

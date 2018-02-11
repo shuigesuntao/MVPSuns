@@ -16,8 +16,6 @@
 package com.mercy.suns.di.module;
 
 import android.app.Application;
-import android.arch.persistence.room.Room;
-import android.arch.persistence.room.RoomDatabase;
 import android.content.Context;
 import android.support.annotation.Nullable;
 
@@ -218,21 +216,4 @@ public abstract class ClientModule {
         RxCache configRxCache(Context context, RxCache.Builder builder);
     }
 
-    public interface RoomConfiguration<T extends RoomDatabase> {
-        /**
-         * 提供接口，自定义配置 RoomDatabase
-         *
-         * @param context Context
-         * @param builder RoomDatabase.Builder
-         */
-        void configRoom(Context context, RoomDatabase.Builder<T> builder);
-
-
-        RoomConfiguration EMPTY = new RoomConfiguration() {
-            @Override
-            public void configRoom(Context context, RoomDatabase.Builder builder) {
-
-            }
-        };
-    }
 }

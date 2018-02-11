@@ -2,6 +2,7 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
+apply plugin: 'io.objectbox'
 
 android {
     compileSdkVersion rootProject.ext.android["compileSdkVersion"]
@@ -23,13 +24,6 @@ android {
         versionName rootProject.ext.android["versionName"]
         testInstrumentationRunner rootProject.ext.dependencies["androidJUnitRunner"]
         multiDexEnabled true
-        //Room
-        javaCompileOptions {
-            annotationProcessorOptions {
-                arguments = ["room.schemaLocation":
-                                     "$projectDir/schemas".toString()]
-            }
-        }
 
         ndk {
             abiFilters "armeabi-v7a", "x86"
@@ -85,7 +79,10 @@ dependencies {
     kapt(rootProject.ext.dependencies["dagger2-android-processor"]) {
         exclude module: 'jsr305'
     }
-    kapt rootProject.ext.dependencies["room-compiler"]
+
+    implementation "io.objectbox:objectbox-android:$objectboxVersion"
+    implementation "io.objectbox:objectbox-kotlin:$objectboxVersion"
+    implementation 'io.objectbox:objectbox-rxjava:0.9.8'
     implementation rootProject.ext.dependencies["progressmanager"]
     implementation rootProject.ext.dependencies["retrofit-url-manager"]
     implementation rootProject.ext.dependencies["lifecyclemodel"]

@@ -5,16 +5,20 @@ import android.arch.lifecycle.OnLifecycleEvent
 import com.mercy.suns.di.scope.ActivityScope
 import com.mercy.suns.integration.IRepositoryManager
 import com.mercy.suns.mvp.BaseModel
+import io.objectbox.BoxStore
+import io.objectbox.kotlin.boxFor
+import io.objectbox.rx.RxBoxStore
+import io.objectbox.rx.RxQuery
 import io.reactivex.Observable
 import io.rx_cache2.DynamicKey
 import io.rx_cache2.EvictDynamicKey
 import sun.mercy.mvpsuns.demo.mvp.contract.UserContract
 import sun.mercy.mvpsuns.demo.mvp.model.api.cache.CommonCache
 import sun.mercy.mvpsuns.demo.mvp.model.api.service.AccountService
-import sun.mercy.mvpsuns.demo.mvp.model.db.UserInfoDb
 import sun.mercy.mvpsuns.demo.mvp.model.db.entity.User
 
 import timber.log.Timber
+import java.util.function.Consumer
 import javax.inject.Inject
 
 /**
@@ -23,14 +27,15 @@ import javax.inject.Inject
  * UserModel
  */
 @ActivityScope
-class UserModel @Inject constructor(repositoryManager: IRepositoryManager):
+class UserModel @Inject constructor(repositoryManager: IRepositoryManager) :
         BaseModel(repositoryManager), UserContract.Model {
 
-
+    @Inject
+    lateinit var mBoxStore: BoxStore
 
     private val USERS_PER_PAGE = 10
 
-    override fun getUsers(lastIdQueried: Int, update: Boolean): Observable<List<User>> {
+    override fun getUsers(lastIdQueried: Long, update: Boolean): Observable<List<User>> {
         //使用rxcache缓存,上拉刷新则不读取缓存,加载更多读取缓存
         return Observable.just(mRepositoryManager
                 .obtainRetrofitService(AccountService::class.java)
@@ -44,18 +49,12 @@ class UserModel @Inject constructor(repositoryManager: IRepositoryManager):
     }
 
     override fun getAllUsersFromDb(): Observable<List<User>> {
-        return mRepositoryManager
-                .obtainRoomDatabase(UserInfoDb::class.java, UserInfoDb.DB_NAME)
-                .userDao()
-                .getAll()
-                .toObservable()
+        return RxQuery.observable(mBoxStore.boxFor<User>().query().build())
+
     }
 
     override fun saveUsers(users: List<User>) {
-        mRepositoryManager
-                .obtainRoomDatabase(UserInfoDb::class.java, UserInfoDb.DB_NAME)
-                .userDao()
-                .insertAll(*users.toTypedArray())
+        mBoxStore.boxFor<User>().put(users)
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_PAUSE)

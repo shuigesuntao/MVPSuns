@@ -44,7 +44,7 @@ class LoginActivity : BaseMvpActivity<LoginPresenter>(), LoginContract.View, Vie
 
     override fun onLoginSuccess() {
         showMessage("登录成功")
-        startActivity(Intent(this@LoginActivity, MainActivity::class.java))
+        startActivity(Intent(this@LoginActivity, UserActivity::class.java))
         finish()
     }
 

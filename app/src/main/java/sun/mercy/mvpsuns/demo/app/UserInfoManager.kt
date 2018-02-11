@@ -1,23 +1,25 @@
+@file:Suppress("unused")
+
 package sun.mercy.mvpsuns.demo.app
 
 
 import android.content.Context
 import android.net.Uri
-import android.text.TextUtils
 import com.mercy.suns.di.scope.AppScope
 import com.mercy.suns.integration.IRepositoryManager
 import com.mercy.suns.utils.DataHelper
+import io.objectbox.Box
+import io.objectbox.BoxStore
+import io.objectbox.kotlin.boxFor
 import io.reactivex.Observable
 import io.rong.imlib.model.UserInfo
-import me.jessyan.rxerrorhandler.handler.ErrorHandleSubscriber
 import sun.mercy.mvpsuns.demo.app.utils.CharacterParser
+import sun.mercy.mvpsuns.demo.app.utils.RongGenerate
 import sun.mercy.mvpsuns.demo.app.utils.convert
 import sun.mercy.mvpsuns.demo.mvp.model.api.service.AccountService
-import sun.mercy.mvpsuns.demo.mvp.model.db.*
-import sun.mercy.mvpsuns.demo.mvp.model.db.entity.Friend
-import sun.mercy.mvpsuns.demo.mvp.model.db.entity.Groups
+import sun.mercy.mvpsuns.demo.mvp.model.db.entity.*
 import sun.mercy.mvpsuns.demo.mvp.model.resp.*
-import java.util.ArrayList
+import java.util.LinkedHashMap
 import javax.inject.Inject
 
 
@@ -67,25 +69,28 @@ class UserInfoManager constructor(private val context: Context) {
     @Inject
     lateinit var mRepositoryManager: IRepositoryManager
 
-    private var mDataBase: UserInfoDb? = null
+    @Inject
+    lateinit var mBoxStore: BoxStore
+
     private var mAccountService: AccountService
-    private var mFriendDao: FriendDao? = null
-    private var mGroupsDao: GroupsDao? = null
-    private var mGroupMemberDao: GroupMemberDao? = null
-    private var mBlackLisDao: BlackListDao? = null
+    private var mFriendBox: Box<Friend>? = null
+    private var mGroupsBox: Box<Groups>? = null
+    private var mGroupMemberBox: Box<GroupMember>? = null
+    private var mBlackLisBox: Box<BlackList>? = null
+    private var mUserInfoCache: LinkedHashMap<String, UserInfo>? = null
 
     init {
         mAccountService = mRepositoryManager.obtainRetrofitService(AccountService::class.java)
     }
 
     fun openDB() {
-        mDataBase = mRepositoryManager.obtainRoomDatabase(UserInfoDb::class.java, UserInfoDb.DB_NAME)
-        mDataBase?.apply {
-            mFriendDao = friendDao()
-            mGroupsDao = groupsDap()
-            mGroupMemberDao = groupMemberDao()
-            mBlackLisDao = blackListDao()
+        mBoxStore.apply {
+            mFriendBox = boxFor()
+            mGroupsBox = boxFor()
+            mGroupMemberBox = boxFor()
+            mBlackLisBox = boxFor()
         }
+        mUserInfoCache = LinkedHashMap()
         mGetAllUserInfoState = DataHelper.getIntergerSF(context, Const.KEY_SP_GET_ALL_USERINFO_STATE)
     }
 
@@ -99,7 +104,7 @@ class UserInfoManager constructor(private val context: Context) {
                 .convert()
                 .flatMap {
                     if (it.isNotEmpty()) {
-                        deleteFriends(friends)
+                        deleteFriends()
                         insertFriends(it)
                     }
                     mGetAllUserInfoState = mGetAllUserInfoState or FRIEND
@@ -114,9 +119,12 @@ class UserInfoManager constructor(private val context: Context) {
                 .flatMap {
                     if (it.isNotEmpty()) {
                         val groups = it.map {
-                            Groups(it.group.id, it.group.name, it.group.portraitUri, role = it.role.toString())
+                            Groups(groupsId = it.group.id,
+                                    name = it.group.name,
+                                    portraitUri = it.group.portraitUri,
+                                    role = it.role.toString())
                         }
-                        deleteGrouops(groups)
+                        deleteGrouops()
                         insertGroups(groups)
                     }
                     mGetAllUserInfoState = mGetAllUserInfoState or GROUPS
@@ -133,9 +141,12 @@ class UserInfoManager constructor(private val context: Context) {
     }
 
     fun insertFriends(friends: List<FriendResp>) {
-       friends.filter { it.status == 20 }
+        friends.filter { it.status == 20 }
                 .map {
-                    Friend(it.user.id, it.user.nickname, it.user.portraitUri, it.displayName,
+                    Friend(userId = it.user.id,
+                            name = it.user.nickname,
+                            portraitUri = it.user.portraitUri,
+                            displayName = it.displayName,
                             nameSpelling = CharacterParser.getSpelling(it.user.nickname),
                             displayNameSpelling = CharacterParser.getSpelling(it.displayName))
                 }
@@ -147,23 +158,23 @@ class UserInfoManager constructor(private val context: Context) {
                 }
                 .takeIf { it.isNotEmpty() }
                 ?.let {
-                    mFriendDao?.insertAll(*it.toTypedArray())
+                    mFriendBox?.put(it)
                 }
 
 
     }
 
-    fun deleteFriends(friends: List<Friend>) {
-        mFriendDao?.deleteFriends(*friends.toTypedArray())
+    fun deleteFriends() {
+        mFriendBox?.removeAll()
     }
 
 
     fun insertGroups(groups: List<Groups>) {
-        mGroupsDao?.insertAll(*groups.toTypedArray())
+        mGroupsBox?.put(groups)
     }
 
-    fun deleteGrouops(groups: List<Groups>) {
-        mGroupsDao?.deleteGroups(*groups.toTypedArray())
+    fun deleteGrouops() {
+        mGroupsBox?.removeAll()
     }
 
 
@@ -171,111 +182,122 @@ class UserInfoManager constructor(private val context: Context) {
      * 获取用户头像,头像为空时会生成默认的头像,此默认头像可能已经存在数据库中,不重新生成
      * 先从缓存读,再从数据库读
      */
-    private fun getPortrait(friend: Friend?): String? {
-//        if (friend != null) {
-//            if (friend.getPortraitUri() == null || TextUtils.isEmpty(friend.getPortraitUri().toString())) {
-//                if (TextUtils.isEmpty(friend.getUserId())) {
-//                    return null
-//                } else {
-//                    var userInfo: UserInfo? = mUserInfoCache.get(friend.getUserId())
-//                    if (userInfo != null) {
-//                        if (userInfo.portraitUri != null && !TextUtils.isEmpty(userInfo.portraitUri.toString())) {
-//                            return userInfo.portraitUri.toString()
-//                        } else {
-//                            mUserInfoCache.remove(friend.getUserId())
-//                        }
+    private fun getPortrait(friend: Friend): String? {
+        if (friend.portraitUri.isEmpty()) {
+            if (friend.userId.isEmpty()) {
+                return null
+            } else {
+                var userInfo: UserInfo? = mUserInfoCache?.get(friend.userId)
+                if (userInfo != null) {
+                    if (!userInfo.portraitUri?.toString().isNullOrEmpty()) {
+                        return userInfo.portraitUri.toString()
+                    } else {
+                        mUserInfoCache?.remove(friend.userId)
+                    }
+                }
+                val groupMemberList = getGroupMembersWithUserId(friend.userId)
+                if (groupMemberList != null && groupMemberList.isNotEmpty()) {
+                    val groupMember = groupMemberList[0]
+                    if (groupMember.portraitUri.isNotEmpty())
+                        return groupMember.portraitUri
+                }
+                val portrait = RongGenerate.generateDefaultAvatar(friend.name, friend.userId)
+                //缓存信息kit会使用,备注名存在时需要缓存displayName
+                var name = friend.name
+                if (friend.displayName.isNotEmpty()) {
+                    name = friend.displayName
+                }
+                userInfo = UserInfo(friend.userId, name, Uri.parse(portrait))
+                mUserInfoCache?.put(friend.userId, userInfo)
+                return portrait
+            }
+        } else {
+            return friend.portraitUri
+        }
+    }
+
+    /**
+     * 同步获取群组成员信息
+     *
+     * @param userId 用户Id
+     * @return List<GroupMember> 群组成员列表
+     */
+    fun getGroupMembersWithUserId(userId: String): List<GroupMember>? {
+        return if (userId.isEmpty()) {
+            null
+        } else {
+            mGroupMemberBox?.query()?.equal(GroupMember_.userId,userId)?.build()?.find()
+        }
+    }
+
+//    private fun getAllUserInfo() {
+//        if (hasGetAllUserInfo()) return
+//        Observable.just(!hasGetFriends())
+//                .filter { it }
+//                .flatMap { fetchFriends() }
+//                .map {
+//                    if (it.isNotEmpty()) {
+//                        mModel.deleteAllFriends()
+//                        mModel.insertFriends(it.map { it.convertFriendEntity() })
 //                    }
-//                    val groupMemberList = getGroupMembersWithUserId(friend.getUserId())
-//                    if (groupMemberList != null && groupMemberList!!.size > 0) {
-//                        val groupMember = groupMemberList!!.get(0)
-//                        if (groupMember.getPortraitUri() != null && !TextUtils.isEmpty(groupMember.getPortraitUri().toString()))
-//                            return groupMember.getPortraitUri().toString()
-//                    }
-//                    val portrait = RongGenerate.generateDefaultAvatar(friend.getName(), friend.getUserId())
-//                    //缓存信息kit会使用,备注名存在时需要缓存displayName
-//                    var name = friend.getName()
-//                    if (friend.isExitsDisplayName()) {
-//                        name = friend.getDisplayName()
-//                    }
-//                    userInfo = UserInfo(friend.getUserId(), name, Uri.parse(portrait))
-//                    mUserInfoCache.put(friend.getUserId(), userInfo)
-//                    return portrait
+//                    mGetAllUserInfoState = mGetAllUserInfoState or FRIEND
 //                }
-//            } else {
-//                return friend.getPortraitUri().toString()
-//            }
-//        }
-        return null
-    }
-
-    private fun getAllUserInfo() {
-        if (hasGetAllUserInfo()) return
-        Observable.just(!hasGetFriends())
-                .filter { it }
-                .flatMap { fetchFriends() }
-                .map {
-                    if (it.isNotEmpty()) {
-                        mModel.deleteAllFriends()
-                        mModel.insertFriends(it.map { it.convertFriendEntity() })
-                    }
-                    mGetAllUserInfoState = mGetAllUserInfoState or FRIEND
-                }
-                .filter { !hasGetGroups() }
-                .flatMap { mModel.fetchGroups() }
-                .map {
-                    if (it.isNotEmpty()) {
-                        mModel.deleteGroups()
-                        mModel.addGroups(it)
-                        mModel.deleteGroupMembers()
-                    }
-                    mGetAllUserInfoState = mGetAllUserInfoState or GROUPS
-                    it
-                }
-                .filter { !hasGetAllGroupMembers() }
-                .flatMap {
-                    Observable.fromIterable(it)
-                }
-                .flatMap {
-                    mModel.fetchGroupMembers(it.id)
-                }
-                .map {
-                    if (it.isNotEmpty()) {
-                        mModel.addGroupMembers(it, group.getGroupsId())
-                    }
-                }
-                .filter { !hasGetAllGroupMembers() }
-                .filter { hasGetPartGroupMembers() }
-                .flatMap { mModel.fetchGroups() }
-                .map {
-                    if (it.isNotEmpty()) {
-                        mModel.deleteGroups()
-                        mModel.addGroups(it)
-                        mModel.deleteGroupMembers()
-                    }
-                    mGetAllUserInfoState = mGetAllUserInfoState or GROUPS
-                    it
-                }
-                .filter { !hasGetAllGroupMembers() }
-                .flatMap {
-                    Observable.fromIterable(it)
-                }
-                .flatMap {
-                    mModel.fetchGroupMembers(it.id)
-                }
-                .map {
-                    if (it.isNotEmpty()) {
-                        mModel.addGroupMembers(it, group.getGroupsId())
-                    }
-                }
-                .filter { !hasGetBlackList() }
-                .flatMap { mModel.fetchBlackList() }
-                .doOnError {
-                    setGetAllUserInfoDone()
-                }
-                .executeWithLoading(mRootView, object : ErrorHandleSubscriber<>)
-
-
-    }
+//                .filter { !hasGetGroups() }
+//                .flatMap { mModel.fetchGroups() }
+//                .map {
+//                    if (it.isNotEmpty()) {
+//                        mModel.deleteGroups()
+//                        mModel.addGroups(it)
+//                        mModel.deleteGroupMembers()
+//                    }
+//                    mGetAllUserInfoState = mGetAllUserInfoState or GROUPS
+//                    it
+//                }
+//                .filter { !hasGetAllGroupMembers() }
+//                .flatMap {
+//                    Observable.fromIterable(it)
+//                }
+//                .flatMap {
+//                    mModel.fetchGroupMembers(it.id)
+//                }
+//                .map {
+//                    if (it.isNotEmpty()) {
+//                        mModel.addGroupMembers(it, group.getGroupsId())
+//                    }
+//                }
+//                .filter { !hasGetAllGroupMembers() }
+//                .filter { hasGetPartGroupMembers() }
+//                .flatMap { mModel.fetchGroups() }
+//                .map {
+//                    if (it.isNotEmpty()) {
+//                        mModel.deleteGroups()
+//                        mModel.addGroups(it)
+//                        mModel.deleteGroupMembers()
+//                    }
+//                    mGetAllUserInfoState = mGetAllUserInfoState or GROUPS
+//                    it
+//                }
+//                .filter { !hasGetAllGroupMembers() }
+//                .flatMap {
+//                    Observable.fromIterable(it)
+//                }
+//                .flatMap {
+//                    mModel.fetchGroupMembers(it.id)
+//                }
+//                .map {
+//                    if (it.isNotEmpty()) {
+//                        mModel.addGroupMembers(it, group.getGroupsId())
+//                    }
+//                }
+//                .filter { !hasGetBlackList() }
+//                .flatMap { mModel.fetchBlackList() }
+//                .doOnError {
+//                    setGetAllUserInfoDone()
+//                }
+//                .executeWithLoading(mRootView, object : ErrorHandleSubscriber<>)
+//
+//
+//    }
 
     private fun setGetAllUserInfoDone() {
         DataHelper.setIntergerSF(context, Const.KEY_SP_GET_ALL_USERINFO_STATE, mGetAllUserInfoState)

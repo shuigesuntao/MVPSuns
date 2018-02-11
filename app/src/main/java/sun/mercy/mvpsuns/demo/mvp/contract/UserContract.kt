@@ -25,7 +25,7 @@ interface UserContract {
 
     //Model层定义接口,外部只需关心Model返回的数据,无需关心内部细节,如是否使用缓存
     interface Model : IModel {
-        fun getUsers(lastIdQueried: Int, update: Boolean): Observable<List<User>>
+        fun getUsers(lastIdQueried: Long, update: Boolean): Observable<List<User>>
         fun saveUsers(users: List<User>)
         fun getAllUsersFromDb(): Observable<List<User>>
     }

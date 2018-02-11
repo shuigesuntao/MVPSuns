@@ -15,8 +15,8 @@ import sun.mercy.mvpsuns.demo.mvp.model.resp.*
 interface AccountService {
 
     @Headers("Accept: application/vnd.github.v3+json")
-    @GET("/users")
-    fun getUsers(@Query("since") lastIdQueried: Int, @Query("per_page") perPage: Int):
+    @GET("https://api.github.com/users")
+    fun getUsers(@Query("since") lastIdQueried: Long, @Query("per_page") perPage: Int):
             Observable<List<User>>
 
     /**

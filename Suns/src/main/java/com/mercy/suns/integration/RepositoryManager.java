@@ -16,8 +16,6 @@
 package com.mercy.suns.integration;
 
 import android.app.Application;
-import android.arch.persistence.room.Room;
-import android.arch.persistence.room.RoomDatabase;
 import android.content.Context;
 
 import com.mercy.suns.di.module.ClientModule;
@@ -51,12 +49,10 @@ public class RepositoryManager implements IRepositoryManager {
     Application mApplication;
     @Inject
     Cache.Factory mCacheFactory;
-    @Inject
-    ClientModule.RoomConfiguration mRoomConfiguration;
 
     private Cache<String, Object> mRetrofitServiceCache;
     private Cache<String, Object> mCacheServiceCache;
-    private Cache<String, Object> mRoomDatabaseCache;
+
 
 
     @Inject
@@ -117,23 +113,4 @@ public class RepositoryManager implements IRepositoryManager {
         return mApplication;
     }
 
-    @Override
-    public synchronized<T extends RoomDatabase> T obtainRoomDatabase(Class<T> database, String dbName) {
-        if (mRoomDatabaseCache == null) {
-            mRoomDatabaseCache = mCacheFactory.build(CacheType.ROOM_DATABASE_CACHE);
-        }
-        Preconditions.checkNotNull(mRoomDatabaseCache, "Cannot return null from a Cache.Factory#build(int) method");
-        T roomDatabase = (T) mRoomDatabaseCache.get(database.getName());
-        if (roomDatabase == null) {
-            RoomDatabase.Builder builder = Room.databaseBuilder(mApplication, database, dbName);
-            //自定义 Room 配置
-            if (mRoomConfiguration != null) {
-                mRoomConfiguration.configRoom(mApplication, builder);
-            }
-            roomDatabase = (T) builder.build();
-            mRoomDatabaseCache.put(database.getName(), roomDatabase);
-        }
-
-        return roomDatabase;
-    }
 }
