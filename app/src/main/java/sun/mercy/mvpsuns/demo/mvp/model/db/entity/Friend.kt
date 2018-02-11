@@ -1,4 +1,5 @@
-package sun.mercy.mvpsuns.demo.mvp.model.entity
+package sun.mercy.mvpsuns.demo.mvp.model.db.entity
+
 
 import android.arch.persistence.room.ColumnInfo
 import android.arch.persistence.room.Entity
@@ -10,22 +11,22 @@ import android.arch.persistence.room.PrimaryKey
  * Friend
  */
 @Entity(tableName = "friend")
-data class Friend (@PrimaryKey
-                   @ColumnInfo(name = "user_id")
-                   val userId: String,
-                   @ColumnInfo(index = true)
-                   val name:String,
-                   @ColumnInfo(name = "portrait_uri")
-                   val portraitUri:String,
-                   @ColumnInfo(name = "display_name",index = true)
-                   val displayName: String,
-                   val region: String,
-                   @ColumnInfo(name = "phone_number")
-                   val phoneNumber: String,
-                   val status: String,
-                   val timestamp: Long,
-                   val letters: String,
-                   @ColumnInfo(name = "name_spelling",index = true)
-                   val nameSpelling: String,
-                   @ColumnInfo(name = "display_name_spelling", index = true)
-                   val displayNameSpelling: String)
+data class Friend(@PrimaryKey
+                  @ColumnInfo(name = "user_id")
+                  val userId: String,
+                  @ColumnInfo(index = true)
+                  val name: String,
+                  @ColumnInfo(name = "portrait_uri")
+                  var portraitUri: String = "",
+                  @ColumnInfo(name = "display_name", index = true)
+                  val displayName: String = "",
+                  val region: String = "",
+                  @ColumnInfo(name = "phone_number")
+                  val phoneNumber: String = "",
+                  val status: String = "",
+                  val timestamp: Long = 0,
+                  val letters: String = "",
+                  @ColumnInfo(name = "name_spelling", index = true)
+                  val nameSpelling: String? = "",
+                  @ColumnInfo(name = "display_name_spelling", index = true)
+                  val displayNameSpelling: String? = "")

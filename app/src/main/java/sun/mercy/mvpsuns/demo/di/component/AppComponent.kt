@@ -6,7 +6,9 @@ import dagger.Component
 import dagger.android.AndroidInjectionModule
 import dagger.android.support.AndroidSupportInjectionModule
 import sun.mercy.mvpsuns.demo.app.MainApp
+import sun.mercy.mvpsuns.demo.app.UserInfoManager
 import sun.mercy.mvpsuns.demo.di.module.AppModule
+
 
 
 /**
@@ -18,5 +20,6 @@ import sun.mercy.mvpsuns.demo.di.module.AppModule
 @Component(dependencies = arrayOf(SunsComponent::class),
         modules = arrayOf(AndroidInjectionModule::class, AndroidSupportInjectionModule::class, AppModule::class))
 interface AppComponent {
+    fun userInfoManager():UserInfoManager
     fun inject(mainApp: MainApp)
 }

@@ -2,7 +2,8 @@ package sun.mercy.mvpsuns.demo.mvp.model.db
 
 import android.arch.persistence.room.Database
 import android.arch.persistence.room.RoomDatabase
-import sun.mercy.mvpsuns.demo.mvp.model.entity.*
+import sun.mercy.mvpsuns.demo.mvp.model.db.entity.*
+
 
 /**
  * ================================================
@@ -10,8 +11,8 @@ import sun.mercy.mvpsuns.demo.mvp.model.entity.*
  * Created by sun on 2018/2/2
  * ================================================
  */
-@Database(entities = arrayOf(User::class,Groups::class,GroupMember::class,Friend::class
-        ,BlackList::class),version = 1)
+@Database(entities = arrayOf(User::class, Groups::class, GroupMember::class, Friend::class
+        , BlackList::class),version = 1)
 abstract class UserInfoDb : RoomDatabase(){
     companion object {
         val DB_NAME = UserInfoDb::class.java.simpleName

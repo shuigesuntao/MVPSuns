@@ -2,7 +2,7 @@ package sun.mercy.mvpsuns.demo.mvp.model.db
 
 import android.arch.persistence.room.*
 import io.reactivex.Flowable
-import sun.mercy.mvpsuns.demo.mvp.model.entity.Groups
+import sun.mercy.mvpsuns.demo.mvp.model.db.entity.Groups
 
 
 /**

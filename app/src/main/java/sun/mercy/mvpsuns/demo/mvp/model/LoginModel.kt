@@ -39,26 +39,6 @@ class LoginModel @Inject constructor(repositoryManager: IRepositoryManager):
                 .getUserInfoById(userId)
     }
 
-    override fun fetchFriends(): Observable<List<FriendResp>> {
-        return mRepositoryManager.obtainRetrofitService(AccountService::class.java)
-                .getAllFriends().convert()
-    }
-
-    override fun fetchGroups(): Observable<List<GroupsResp>> {
-        return mRepositoryManager.obtainRetrofitService(AccountService::class.java)
-                .getGroups().convert()
-    }
-
-    override fun fetchGroupMembers(groupId:String): Observable<List<GroupMemberResp>> {
-        return mRepositoryManager.obtainRetrofitService(AccountService::class.java)
-                .getGroupMembers(groupId).convert()
-    }
-
-    override fun fetchBlackList(): Observable<List<BlackListResp>> {
-        return mRepositoryManager.obtainRetrofitService(AccountService::class.java)
-                .getBlackList().convert()
-    }
-
 
     @OnLifecycleEvent(Lifecycle.Event.ON_PAUSE)
     internal fun onPause() {

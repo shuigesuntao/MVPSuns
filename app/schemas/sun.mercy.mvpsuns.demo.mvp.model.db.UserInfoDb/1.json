@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "cf1ea03b9bcb36e131c317aeae5b1e31",
+    "identityHash": "21f415dad3c36807c242130de519711b",
     "entities": [
       {
         "tableName": "users",
@@ -241,7 +241,7 @@
       },
       {
         "tableName": "friend",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`user_id` TEXT NOT NULL, `name` TEXT NOT NULL, `portrait_uri` TEXT NOT NULL, `display_name` TEXT NOT NULL, `region` TEXT NOT NULL, `phone_number` TEXT NOT NULL, `status` TEXT NOT NULL, `timestamp` INTEGER NOT NULL, `letters` TEXT NOT NULL, `name_spelling` TEXT NOT NULL, `display_name_spelling` TEXT NOT NULL, PRIMARY KEY(`user_id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`user_id` TEXT NOT NULL, `name` TEXT NOT NULL, `portrait_uri` TEXT NOT NULL, `display_name` TEXT NOT NULL, `region` TEXT NOT NULL, `phone_number` TEXT NOT NULL, `status` TEXT NOT NULL, `timestamp` INTEGER NOT NULL, `letters` TEXT NOT NULL, `name_spelling` TEXT, `display_name_spelling` TEXT, PRIMARY KEY(`user_id`))",
         "fields": [
           {
             "fieldPath": "userId",
@@ -301,13 +301,13 @@
             "fieldPath": "nameSpelling",
             "columnName": "name_spelling",
             "affinity": "TEXT",
-            "notNull": true
+            "notNull": false
           },
           {
             "fieldPath": "displayNameSpelling",
             "columnName": "display_name_spelling",
             "affinity": "TEXT",
-            "notNull": true
+            "notNull": false
           }
         ],
         "primaryKey": {
@@ -387,7 +387,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"cf1ea03b9bcb36e131c317aeae5b1e31\")"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"21f415dad3c36807c242130de519711b\")"
     ]
   }
 }

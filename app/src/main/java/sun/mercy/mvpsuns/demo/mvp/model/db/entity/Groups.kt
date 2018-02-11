@@ -1,4 +1,4 @@
-package sun.mercy.mvpsuns.demo.mvp.model.entity
+package sun.mercy.mvpsuns.demo.mvp.model.db.entity
 
 import android.arch.persistence.room.ColumnInfo
 import android.arch.persistence.room.Entity
@@ -18,9 +18,9 @@ data class Groups(@PrimaryKey
                   @ColumnInfo(name = "portrait_uri")
                   val portraitUri:String,
                   @ColumnInfo(name = "display_name")
-                  val displayName: String,
+                  val displayName: String = "",
                   val role: String,
-                  val bulletin: String,
-                  val timestamp: String,
+                  val bulletin: String = "",
+                  val timestamp: String = "",
                   @ColumnInfo(name = "name_spelling",index = true)
-                  val nameSpelling: String)
+                  val nameSpelling: String = "")

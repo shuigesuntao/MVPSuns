@@ -1,12 +1,9 @@
 package sun.mercy.mvpsuns.demo.mvp.model.db
 
 import android.arch.persistence.room.*
-import android.location.Location
 import io.reactivex.Flowable
-import io.reactivex.Observable
-import sun.mercy.mvpsuns.demo.mvp.model.entity.BlackList
-import sun.mercy.mvpsuns.demo.mvp.model.entity.Friend
-import sun.mercy.mvpsuns.demo.mvp.model.entity.User
+import sun.mercy.mvpsuns.demo.mvp.model.db.entity.BlackList
+
 
 /**
  * ================================================

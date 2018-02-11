@@ -8,6 +8,6 @@ package sun.mercy.mvpsuns.demo.mvp.model.resp
  */
 data class FriendResp(val displayName:String,
                       val message:String,
-                      val status:String,
+                      val status:Int,
                       val updatedAt:String,
                       val user: UserInfoResp)
