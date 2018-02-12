@@ -5,22 +5,21 @@ package sun.mercy.mvpsuns.demo.app
 
 import android.content.Context
 import android.net.Uri
-import com.mercy.suns.di.scope.AppScope
-import com.mercy.suns.integration.IRepositoryManager
 import com.mercy.suns.utils.DataHelper
 import io.objectbox.Box
 import io.objectbox.BoxStore
 import io.objectbox.kotlin.boxFor
+import io.objectbox.rx.RxQuery
 import io.reactivex.Observable
 import io.rong.imlib.model.UserInfo
+import org.json.JSONException
 import sun.mercy.mvpsuns.demo.app.utils.CharacterParser
 import sun.mercy.mvpsuns.demo.app.utils.RongGenerate
 import sun.mercy.mvpsuns.demo.app.utils.convert
 import sun.mercy.mvpsuns.demo.mvp.model.api.service.AccountService
 import sun.mercy.mvpsuns.demo.mvp.model.db.entity.*
 import sun.mercy.mvpsuns.demo.mvp.model.resp.*
-import java.util.LinkedHashMap
-import javax.inject.Inject
+import javax.inject.Singleton
 
 
 /**
@@ -29,7 +28,7 @@ import javax.inject.Inject
  * Created by sun on 2018/2/11
  * ================================================
  */
-@AppScope
+@Singleton
 class UserInfoManager constructor(private val context: Context) {
 
 
@@ -66,11 +65,9 @@ class UserInfoManager constructor(private val context: Context) {
 
     private var mGetAllUserInfoState = 0
 
-    @Inject
-    lateinit var mRepositoryManager: IRepositoryManager
+    private val mRepositoryManager = (context.applicationContext as MainApp).getAppComponent().repositoryManager()
 
-    @Inject
-    lateinit var mBoxStore: BoxStore
+    private var mBoxStore: BoxStore? = (context.applicationContext as MainApp).getAppComponent().boxStore()
 
     private var mAccountService: AccountService
     private var mFriendBox: Box<Friend>? = null
@@ -78,13 +75,14 @@ class UserInfoManager constructor(private val context: Context) {
     private var mGroupMemberBox: Box<GroupMember>? = null
     private var mBlackLisBox: Box<BlackList>? = null
     private var mUserInfoCache: LinkedHashMap<String, UserInfo>? = null
+    private var mGroupsList: MutableList<Groups>? = null//同步群组成员信息时需要这个数据
 
     init {
         mAccountService = mRepositoryManager.obtainRetrofitService(AccountService::class.java)
     }
 
     fun openDB() {
-        mBoxStore.apply {
+        mBoxStore?.apply {
             mFriendBox = boxFor()
             mGroupsBox = boxFor()
             mGroupMemberBox = boxFor()
@@ -95,8 +93,74 @@ class UserInfoManager constructor(private val context: Context) {
     }
 
     fun closeDB() {
-
+        mBoxStore?.apply {
+            close()
+            mBoxStore = null
+            mFriendBox = null
+            mGroupsBox = null
+            mGroupMemberBox = null
+            mBlackLisBox = null
+        }
+        mUserInfoCache?.apply {
+            clear()
+            mUserInfoCache = null
+        }
+        mGroupsList = null
+//        UserInfoEngine.getInstance(mContext).setListener(null)
+//        GroupInfoEngine.getInstance(mContext).setmListener(null)
     }
+
+
+    fun getAllUserInfo() {
+        if (hasGetAllUserInfo()) return
+//        doingGetAllUserInfo = true
+        //在获取用户信息时无论哪一个步骤出错,都不继续往下执行,因为网络出错,很可能再次的网络访问还是有问题
+        if (!hasGetFriends()) {
+            if (!fetchFriends()) {
+                setGetAllUserInfoDone()
+                return
+            }
+        }
+        if (!hasGetGroups()) {
+            if (!fetchGroups()) {
+                setGetAllUserInfoDone()
+                return
+            }
+            if (!hasGetAllGroupMembers()) {
+                if (!fetchGroupMembers()) {
+                    setGetAllUserInfoDone()
+                    return
+                }
+            }
+        }
+        if (!hasGetAllGroupMembers()) {
+            if (hasGetPartGroupMembers()) {
+                deleteGroupMembers()
+            }
+            getGroups()
+                ?.flatMap {
+                if (it.isNotEmpty()) {
+                    deleteGroupMembers()
+                    Observable.fromIterable(it)
+                }else{
+                    setGetAllUserInfoWtihAllGroupMembersState()
+                }
+
+            }
+            fetchGroupMembers()
+        }
+        if (!hasGetBlackList()) {
+            fetchBlackList()
+        }
+        setGetAllUserInfoDone()
+    }
+
+    fun getGroups(): Observable<MutableList<Groups>>? {
+        return mGroupsBox?.let {
+            RxQuery.observable(it.query().build())
+        }
+    }
+
 
     fun fetchFriends(): Observable<List<FriendResp>> {
         return mAccountService
@@ -133,6 +197,61 @@ class UserInfoManager constructor(private val context: Context) {
     }
 
     fun fetchGroupMembers(groupId: String): Observable<List<GroupMemberResp>> {
+        var fetchGroupCount = 0
+        if (mGroupsList!!.isNotEmpty()) {
+            deleteGroupMembers()
+            for (group in mGroupsList!!) {
+                val groupMemberResponse: GetGroupMemberResponse?
+                try {
+                    mAccountService.getGroupMembers(group.groupsId).convert()
+                            .map {
+                                fetchGroupCount++
+                                if (it.isNotEmpty()) {
+                                    if (mGroupMemberBox != null) {
+                                        addGroupMembers(it, group.groupsId)
+                                    } else if (mBoxStore == null) {
+                                        //如果这两个都为null,说明是被踢,已经关闭数据库,没要必要继续执行
+                                        false
+                                    }
+                                } else {
+                                    if (fetchGroupCount > 0) {
+                                        setGetAllUserInfoWithPartGroupMembersState()
+                                    }
+                                    false
+                                }
+                            }
+                } catch (e: JSONException) {
+                    fetchGroupCount++
+                    continue
+                }
+
+                if (groupMemberResponse != null && groupMemberResponse!!.getCode() === 200) {
+                    fetchGroupCount++
+                    val list = groupMemberResponse!!.getResult()
+                    if (list != null && list!!.size > 0) {
+                        if (mGroupMemberDao != null) {
+                            addGroupMembers(list, group.getGroupsId())
+                        } else if (mDBManager == null) {
+                            //如果这两个都为null,说明是被踢,已经关闭数据库,没要必要继续执行
+                            return false
+                        }
+                    }
+                } else {
+                    if (fetchGroupCount > 0) {
+                        setGetAllUserInfoWithPartGroupMembersState()
+                    }
+                    return false
+                }
+            }
+            if (mGroupsList != null && fetchGroupCount == mGroupsList.size) {
+                setGetAllUserInfoWtihAllGroupMembersState()
+                return true
+            }
+        } else {
+            setGetAllUserInfoWtihAllGroupMembersState()
+            return true
+        }
+        return false
         return mAccountService.getGroupMembers(groupId).convert()
     }
 
@@ -177,6 +296,9 @@ class UserInfoManager constructor(private val context: Context) {
         mGroupsBox?.removeAll()
     }
 
+    fun deleteGroupMembers() {
+        mGroupMemberBox?.removeAll()
+    }
 
     /**
      * 获取用户头像,头像为空时会生成默认的头像,此默认头像可能已经存在数据库中,不重新生成
@@ -226,78 +348,9 @@ class UserInfoManager constructor(private val context: Context) {
         return if (userId.isEmpty()) {
             null
         } else {
-            mGroupMemberBox?.query()?.equal(GroupMember_.userId,userId)?.build()?.find()
+            mGroupMemberBox?.query()?.equal(GroupMember_.userId, userId)?.build()?.find()
         }
     }
-
-//    private fun getAllUserInfo() {
-//        if (hasGetAllUserInfo()) return
-//        Observable.just(!hasGetFriends())
-//                .filter { it }
-//                .flatMap { fetchFriends() }
-//                .map {
-//                    if (it.isNotEmpty()) {
-//                        mModel.deleteAllFriends()
-//                        mModel.insertFriends(it.map { it.convertFriendEntity() })
-//                    }
-//                    mGetAllUserInfoState = mGetAllUserInfoState or FRIEND
-//                }
-//                .filter { !hasGetGroups() }
-//                .flatMap { mModel.fetchGroups() }
-//                .map {
-//                    if (it.isNotEmpty()) {
-//                        mModel.deleteGroups()
-//                        mModel.addGroups(it)
-//                        mModel.deleteGroupMembers()
-//                    }
-//                    mGetAllUserInfoState = mGetAllUserInfoState or GROUPS
-//                    it
-//                }
-//                .filter { !hasGetAllGroupMembers() }
-//                .flatMap {
-//                    Observable.fromIterable(it)
-//                }
-//                .flatMap {
-//                    mModel.fetchGroupMembers(it.id)
-//                }
-//                .map {
-//                    if (it.isNotEmpty()) {
-//                        mModel.addGroupMembers(it, group.getGroupsId())
-//                    }
-//                }
-//                .filter { !hasGetAllGroupMembers() }
-//                .filter { hasGetPartGroupMembers() }
-//                .flatMap { mModel.fetchGroups() }
-//                .map {
-//                    if (it.isNotEmpty()) {
-//                        mModel.deleteGroups()
-//                        mModel.addGroups(it)
-//                        mModel.deleteGroupMembers()
-//                    }
-//                    mGetAllUserInfoState = mGetAllUserInfoState or GROUPS
-//                    it
-//                }
-//                .filter { !hasGetAllGroupMembers() }
-//                .flatMap {
-//                    Observable.fromIterable(it)
-//                }
-//                .flatMap {
-//                    mModel.fetchGroupMembers(it.id)
-//                }
-//                .map {
-//                    if (it.isNotEmpty()) {
-//                        mModel.addGroupMembers(it, group.getGroupsId())
-//                    }
-//                }
-//                .filter { !hasGetBlackList() }
-//                .flatMap { mModel.fetchBlackList() }
-//                .doOnError {
-//                    setGetAllUserInfoDone()
-//                }
-//                .executeWithLoading(mRootView, object : ErrorHandleSubscriber<>)
-//
-//
-//    }
 
     private fun setGetAllUserInfoDone() {
         DataHelper.setIntergerSF(context, Const.KEY_SP_GET_ALL_USERINFO_STATE, mGetAllUserInfoState)

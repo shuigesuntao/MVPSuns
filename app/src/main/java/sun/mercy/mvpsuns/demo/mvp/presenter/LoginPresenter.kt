@@ -2,6 +2,7 @@ package sun.mercy.mvpsuns.demo.mvp.presenter
 
 import android.app.Application
 import android.net.Uri
+import android.text.TextUtils
 import com.mercy.suns.mvp.BasePresenter
 import com.mercy.suns.utils.DataHelper
 import io.reactivex.Observable
@@ -15,6 +16,7 @@ import me.jessyan.rxerrorhandler.handler.ErrorHandleSubscriber
 import sun.mercy.mvpsuns.demo.app.BaseException
 import sun.mercy.mvpsuns.demo.app.Const
 import sun.mercy.mvpsuns.demo.app.UserInfoManager
+import sun.mercy.mvpsuns.demo.app.utils.RongGenerate
 import sun.mercy.mvpsuns.demo.mvp.contract.LoginContract
 import sun.mercy.mvpsuns.demo.mvp.model.api.Api
 import sun.mercy.mvpsuns.demo.mvp.model.resp.BaseResp
@@ -36,7 +38,7 @@ class LoginPresenter @Inject constructor(model: LoginContract.Model, rootView: L
     @Inject
     lateinit var mUserInfoManager: UserInfoManager
 
-    private var mUserId:String? = null
+    private var mUserId: String? = null
 
 
     fun login(region: String, phone: String, password: String) {
@@ -47,21 +49,20 @@ class LoginPresenter @Inject constructor(model: LoginContract.Model, rootView: L
                 .doOnSubscribe { mRootView.showLoading() }
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .observeOn(Schedulers.io())
-                .flatMap { mModel.getUserInfoById(it)}
+                .flatMap { mModel.getUserInfoById(it) }
                 .observeOn(AndroidSchedulers.mainThread())
                 .doFinally { mRootView.hideLoading() }
-                .subscribe(object : ErrorHandleSubscriber<BaseResp<UserInfoResp>>(mErrorHandler){
+                .subscribe(object : ErrorHandleSubscriber<BaseResp<UserInfoResp>>(mErrorHandler) {
                     override fun onNext(t: BaseResp<UserInfoResp>) {
-                        if(t.code == Api.RequestSuccess){
-                            if(t.result.portraitUri.isEmpty().not()){
-                                //TODO 如果没设置头像 生成默认头像
+                        if (t.code == Api.RequestSuccess) {
+                            t.result.apply {
+                                if (portraitUri.isEmpty()) {
+                                    portraitUri = RongGenerate.generateDefaultAvatar(nickname, id)
+                                }
+                                DataHelper.setStringSF(mApplication, Const.KEY_SP_NICKNAME, nickname)
+                                DataHelper.setStringSF(mApplication, Const.KEY_SP_PORTRAIT, portraitUri)
+                                RongIM.getInstance().refreshUserInfoCache(UserInfo(mUserId, nickname, Uri.parse(portraitUri)))
                             }
-                            //sp存储
-                            val nickName = t.result.nickname
-                            val portraitUri = t.result.portraitUri
-                            DataHelper.setStringSF(mApplication, Const.KEY_SP_NICKNAME, nickName)
-                            DataHelper.setStringSF(mApplication, Const.KEY_SP_PORTRAIT, portraitUri)
-                            RongIM.getInstance().refreshUserInfoCache(UserInfo(mUserId, nickName, Uri.parse(portraitUri)))
                         }
                         DataHelper.setStringSF(mApplication, Const.KEY_SP_PHONE, phone)
                         DataHelper.setStringSF(mApplication, Const.KEY_SP_PASSWORD, password)

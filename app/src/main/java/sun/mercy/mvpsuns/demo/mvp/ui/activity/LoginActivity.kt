@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.view.View
 import com.mercy.suns.base.BaseMvpActivity
 import com.mercy.suns.utils.SunsUtils
-import io.rong.imkit.MainActivity
 import kotlinx.android.synthetic.main.activity_login.*
 import sun.mercy.mvpsuns.demo.R
 import sun.mercy.mvpsuns.demo.app.utils.enable
@@ -44,7 +43,7 @@ class LoginActivity : BaseMvpActivity<LoginPresenter>(), LoginContract.View, Vie
 
     override fun onLoginSuccess() {
         showMessage("登录成功")
-        startActivity(Intent(this@LoginActivity, UserActivity::class.java))
+        startActivity(Intent(this@LoginActivity, MainActivity::class.java))
         finish()
     }
 

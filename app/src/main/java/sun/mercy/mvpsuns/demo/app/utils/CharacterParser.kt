@@ -1,3 +1,5 @@
+@file:Suppress("unused")
+
 package sun.mercy.mvpsuns.demo.app.utils
 
 import android.graphics.Color
@@ -41,7 +43,7 @@ object CharacterParser {
         var asc = 0
         try {
             val bytes = chs.toByteArray(charset("gb2312"))
-            if (bytes == null || bytes.size > 2 || bytes.isEmpty()) {
+            if (bytes.size > 2 || bytes.isEmpty()) {
                 throw RuntimeException("illegal resource string")
             }
             if (bytes.size == 1) {
@@ -203,11 +205,11 @@ object CharacterParser {
         val lowerCaseText = content.toLowerCase()
         if (lowerCaseText.contains(lowerCaseFilterStr)) {
             val finalBuilder = SpannableStringBuilder()
-            if (type == 0) {
-            } else if (type == 1) {
-                finalBuilder.append("[链接] ")
-            } else if (type == 2) {
-                finalBuilder.append("[文件] ")
+            //首次出现搜索字符的index加上filter的length；
+            when (type) {
+                0 -> { }
+                1 -> finalBuilder.append("[链接] ")
+                2 -> finalBuilder.append("[文件] ")
             }
             val length = content.length
             val firstIndex = lowerCaseText.indexOf(lowerCaseFilterStr)

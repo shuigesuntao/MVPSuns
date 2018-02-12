@@ -1,3 +1,5 @@
+@file:Suppress("unused")
+
 package sun.mercy.mvpsuns.demo.app.utils
 
 import android.graphics.*

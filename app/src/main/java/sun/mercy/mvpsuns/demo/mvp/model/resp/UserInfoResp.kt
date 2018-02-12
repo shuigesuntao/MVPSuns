@@ -8,4 +8,4 @@ package sun.mercy.mvpsuns.demo.mvp.model.resp
  */
 data class UserInfoResp(val id:String,
                         val nickname:String,
-                        val portraitUri:String)
+                        var portraitUri:String)

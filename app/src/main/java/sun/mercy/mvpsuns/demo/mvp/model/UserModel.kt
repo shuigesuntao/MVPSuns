@@ -33,7 +33,9 @@ class UserModel @Inject constructor(repositoryManager: IRepositoryManager) :
     @Inject
     lateinit var mBoxStore: BoxStore
 
-    private val USERS_PER_PAGE = 10
+    companion object {
+        private const val USERS_PER_PAGE = 10
+    }
 
     override fun getUsers(lastIdQueried: Long, update: Boolean): Observable<List<User>> {
         //使用rxcache缓存,上拉刷新则不读取缓存,加载更多读取缓存
