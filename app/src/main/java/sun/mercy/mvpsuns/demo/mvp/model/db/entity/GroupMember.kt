@@ -21,21 +21,21 @@ data class GroupMember(@Id
                        @Index
                        val name: String,
                        @NameInDb("portrait_uri")
-                       val portraitUri: String,
+                       var portraitUri: String,
                        @NameInDb("display_name")
                        @Index
                        val displayName: String,
                        @NameInDb("name_spelling")
                        @Index
-                       val nameSpelling: String,
+                       val nameSpelling: String?,
                        @NameInDb("display_name_spelling")
                        @Index
-                       val displayNameSpelling: String,
+                       val displayNameSpelling: String?,
                        @NameInDb("group_name")
                        @Index
-                       val groupName: String,
+                       val groupName: String?,
                        @NameInDb("group_name_spelling")
                        @Index
-                       val groupNameSpelling: String,
+                       val groupNameSpelling: String?,
                        @NameInDb("group_portrait_uri")
-                       val groupPortraitUri: String)
+                       val groupPortraitUri: String?)
