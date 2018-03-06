@@ -17,7 +17,7 @@ import com.kingja.loadsir.core.LoadService
  */
 abstract class BaseLceFragment<P : IPresenter> : BaseMvpFragment<P>() {
     protected lateinit var mLoadService: LoadService<*>
-    override fun initView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View {
+    override fun initView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         val rootView: View = setUpView(inflater,container,savedInstanceState)
         mLoadService = LoadSir.getDefault().register(rootView) {
             // 重新加载逻辑

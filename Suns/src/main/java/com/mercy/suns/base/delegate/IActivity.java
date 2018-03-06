@@ -19,6 +19,7 @@ package com.mercy.suns.base.delegate;
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentManager;
 
 import com.mercy.suns.base.BaseMvpActivity;
@@ -62,14 +63,14 @@ public interface IActivity {
      * @param savedInstanceState
      * @return
      */
-    int initView(Bundle savedInstanceState);
+    int initView(@Nullable Bundle savedInstanceState);
 
     /**
      * 初始化数据
      *
      * @param savedInstanceState
      */
-    void initData(Bundle savedInstanceState);
+    void initData(@Nullable Bundle savedInstanceState);
 
     /**
      * 这个 Activity 是否会使用 Fragment,框架会根据这个属性判断是否注册 {@link FragmentManager.FragmentLifecycleCallbacks}

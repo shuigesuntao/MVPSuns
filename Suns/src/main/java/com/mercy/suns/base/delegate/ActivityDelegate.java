@@ -17,6 +17,7 @@ package com.mercy.suns.base.delegate;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 
 /**
  * ================================================
@@ -33,7 +34,7 @@ public interface ActivityDelegate {
     String ACTIVITY_DELEGATE = "activity_delegate";
 
 
-    void onCreate(Bundle savedInstanceState);
+    void onCreate(@Nullable Bundle savedInstanceState);
 
     void onStart();
 

@@ -17,6 +17,7 @@ package com.mercy.suns.base.delegate;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.View;
 
@@ -33,11 +34,11 @@ public interface FragmentDelegate {
 
     void onAttach(Context context);
 
-    void onCreate(Bundle savedInstanceState);
+    void onCreate(@Nullable Bundle savedInstanceState);
 
-    void onCreateView(View view, Bundle savedInstanceState);
+    void onCreateView(@Nullable View view,@Nullable Bundle savedInstanceState);
 
-    void onActivityCreate(Bundle savedInstanceState);
+    void onActivityCreate(@Nullable Bundle savedInstanceState);
 
     void onStart();
 
@@ -47,7 +48,7 @@ public interface FragmentDelegate {
 
     void onStop();
 
-    void onSaveInstanceState(Bundle outState);
+    void onSaveInstanceState(@Nullable Bundle outState);
 
     void onDestroyView();
 

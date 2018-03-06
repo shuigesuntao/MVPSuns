@@ -4,12 +4,18 @@ import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Window
+import android.widget.Toast
 import com.mercy.suns.utils.DataHelper
+import com.mercy.suns.utils.PermissionUtil
+import com.mercy.suns.utils.SunsUtils
+import com.tbruyelle.rxpermissions2.RxPermissions
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
+import me.jessyan.rxerrorhandler.core.RxErrorHandler
 import sun.mercy.mvpsuns.demo.app.Const
 import java.util.concurrent.TimeUnit
+import javax.inject.Inject
 
 
 class SplashActivity : AppCompatActivity() {
@@ -19,15 +25,28 @@ class SplashActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val token = DataHelper.getStringSF(this@SplashActivity, Const.KEY_SP_TOKEN)
-        mDisposable = Observable.timer(2, TimeUnit.SECONDS)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({
-                    if (token.isNullOrEmpty()) {
-                        goToLogin()
-                    } else {
-                        goToMain()
-                    }
-                })
+        PermissionUtil.externalStorage(object : PermissionUtil.RequestPermission {
+            override fun onRequestPermissionSuccess() {
+                mDisposable = Observable.timer(2, TimeUnit.SECONDS)
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe({
+                            if (token.isNullOrEmpty()) {
+                                goToLogin()
+                            } else {
+                                goToMain()
+                            }
+                        })
+            }
+
+            override fun onRequestPermissionFailure(permissions: List<String>) {
+                SunsUtils.snackbarText("Request permissions failure")
+            }
+
+            override fun onRequestPermissionFailureWithAskNeverAgain(permissions: List<String>) {
+                SunsUtils.snackbarText("Need to go to the settings")
+            }
+        }, RxPermissions(this@SplashActivity), SunsUtils.obtainAppComponentFromContext(this).rxErrorHandler())
+
     }
 
     private fun goToMain() {

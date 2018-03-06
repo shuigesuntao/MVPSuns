@@ -5,6 +5,7 @@ package sun.mercy.mvpsuns.demo.app.utils
 import android.graphics.*
 import android.os.Environment
 import android.text.TextUtils
+import android.util.Log
 import android.view.View
 import io.rong.imlib.model.UserInfo
 import java.io.*
@@ -18,7 +19,7 @@ import java.util.*
  */
 object RongGenerate {
 
-    private const val SAVEADDRESS = "/data/data/cn.rongcloud.im/temp"
+    private var SAVEADDRESS = Environment.getExternalStorageDirectory().absolutePath + "/suns/temp"
     private const val SCHEMA = "file://"
 
 
@@ -164,8 +165,8 @@ object RongGenerate {
 
         if (newChinese.length > 1) {
             // 判断是不是汉字
-            var liSectorCode = chinese[0].toInt() // 汉字区码
-            var liPositionCode = chinese[1].toInt() // 汉字位码
+            var liSectorCode = newChinese[0].toInt() // 汉字区码
+            var liPositionCode = newChinese[1].toInt() // 汉字位码
             liSectorCode -= 160
             liPositionCode -= 160
             val liSecPosCode = liSectorCode * 100 + liPositionCode // 汉字区位码

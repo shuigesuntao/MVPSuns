@@ -68,7 +68,7 @@ public abstract class BaseFragment extends Fragment implements IFragment, Fragme
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,@Nullable Bundle savedInstanceState) {
         return initView(inflater, container, savedInstanceState);
     }
 

@@ -8,6 +8,9 @@ import sun.mercy.mvpsuns.demo.app.UserInfoManager
 import sun.mercy.mvpsuns.demo.mvp.contract.LoginContract
 import sun.mercy.mvpsuns.demo.mvp.model.LoginModel
 import sun.mercy.mvpsuns.demo.mvp.ui.activity.LoginActivity
+import com.tbruyelle.rxpermissions2.RxPermissions
+
+
 
 /**
  * @author sun
@@ -25,6 +28,12 @@ class AccountModule {
     @Provides
     fun provideLoginModel(model: LoginModel): LoginContract.Model {
         return model
+    }
+
+    @ActivityScope
+    @Provides
+    fun provideRxPermissions(activity: LoginActivity): RxPermissions {
+        return RxPermissions(activity)
     }
 
 }

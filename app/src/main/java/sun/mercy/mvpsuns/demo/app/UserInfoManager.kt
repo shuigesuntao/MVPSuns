@@ -12,7 +12,6 @@ import io.objectbox.kotlin.boxFor
 import io.objectbox.rx.RxQuery
 import io.reactivex.Observable
 import io.rong.imlib.model.UserInfo
-import org.json.JSONException
 import sun.mercy.mvpsuns.demo.app.utils.CharacterParser
 import sun.mercy.mvpsuns.demo.app.utils.RongGenerate
 import sun.mercy.mvpsuns.demo.app.utils.convert
@@ -112,47 +111,47 @@ class UserInfoManager constructor(private val context: Context) {
 
 
     fun getAllUserInfo() {
-        if (hasGetAllUserInfo()) return
-//        doingGetAllUserInfo = true
-        //在获取用户信息时无论哪一个步骤出错,都不继续往下执行,因为网络出错,很可能再次的网络访问还是有问题
-        if (!hasGetFriends()) {
-            if (!fetchFriends()) {
-                setGetAllUserInfoDone()
-                return
-            }
-        }
-        if (!hasGetGroups()) {
-            if (!fetchGroups()) {
-                setGetAllUserInfoDone()
-                return
-            }
-            if (!hasGetAllGroupMembers()) {
-                if (!fetchGroupMembers()) {
-                    setGetAllUserInfoDone()
-                    return
-                }
-            }
-        }
-        if (!hasGetAllGroupMembers()) {
-            if (hasGetPartGroupMembers()) {
-                deleteGroupMembers()
-            }
-            getGroups()
-                ?.flatMap {
-                if (it.isNotEmpty()) {
-                    deleteGroupMembers()
-                    Observable.fromIterable(it)
-                }else{
-                    setGetAllUserInfoWtihAllGroupMembersState()
-                }
-
-            }
-            fetchGroupMembers()
-        }
-        if (!hasGetBlackList()) {
-            fetchBlackList()
-        }
-        setGetAllUserInfoDone()
+//        if (hasGetAllUserInfo()) return
+////        doingGetAllUserInfo = true
+//        //在获取用户信息时无论哪一个步骤出错,都不继续往下执行,因为网络出错,很可能再次的网络访问还是有问题
+//        if (!hasGetFriends()) {
+//            if (!fetchFriends()) {
+//                setGetAllUserInfoDone()
+//                return
+//            }
+//        }
+//        if (!hasGetGroups()) {
+//            if (!fetchGroups()) {
+//                setGetAllUserInfoDone()
+//                return
+//            }
+//            if (!hasGetAllGroupMembers()) {
+//                if (!fetchGroupMembers()) {
+//                    setGetAllUserInfoDone()
+//                    return
+//                }
+//            }
+//        }
+//        if (!hasGetAllGroupMembers()) {
+//            if (hasGetPartGroupMembers()) {
+//                deleteGroupMembers()
+//            }
+//            getGroups()
+//                ?.flatMap {
+//                if (it.isNotEmpty()) {
+//                    deleteGroupMembers()
+//                    Observable.fromIterable(it)
+//                }else{
+//                    setGetAllUserInfoWtihAllGroupMembersState()
+//                }
+//
+//            }
+//            fetchGroupMembers()
+//        }
+//        if (!hasGetBlackList()) {
+//            fetchBlackList()
+//        }
+//        setGetAllUserInfoDone()
     }
 
     fun getGroups(): Observable<MutableList<Groups>>? {
@@ -196,64 +195,64 @@ class UserInfoManager constructor(private val context: Context) {
                 }
     }
 
-    fun fetchGroupMembers(groupId: String): Observable<List<GroupMemberResp>> {
-        var fetchGroupCount = 0
-        if (mGroupsList!!.isNotEmpty()) {
-            deleteGroupMembers()
-            for (group in mGroupsList!!) {
-                val groupMemberResponse: GetGroupMemberResponse?
-                try {
-                    mAccountService.getGroupMembers(group.groupsId).convert()
-                            .map {
-                                fetchGroupCount++
-                                if (it.isNotEmpty()) {
-                                    if (mGroupMemberBox != null) {
-                                        addGroupMembers(it, group.groupsId)
-                                    } else if (mBoxStore == null) {
-                                        //如果这两个都为null,说明是被踢,已经关闭数据库,没要必要继续执行
-                                        false
-                                    }
-                                } else {
-                                    if (fetchGroupCount > 0) {
-                                        setGetAllUserInfoWithPartGroupMembersState()
-                                    }
-                                    false
-                                }
-                            }
-                } catch (e: JSONException) {
-                    fetchGroupCount++
-                    continue
-                }
-
-                if (groupMemberResponse != null && groupMemberResponse!!.getCode() === 200) {
-                    fetchGroupCount++
-                    val list = groupMemberResponse!!.getResult()
-                    if (list != null && list!!.size > 0) {
-                        if (mGroupMemberDao != null) {
-                            addGroupMembers(list, group.getGroupsId())
-                        } else if (mDBManager == null) {
-                            //如果这两个都为null,说明是被踢,已经关闭数据库,没要必要继续执行
-                            return false
-                        }
-                    }
-                } else {
-                    if (fetchGroupCount > 0) {
-                        setGetAllUserInfoWithPartGroupMembersState()
-                    }
-                    return false
-                }
-            }
-            if (mGroupsList != null && fetchGroupCount == mGroupsList.size) {
-                setGetAllUserInfoWtihAllGroupMembersState()
-                return true
-            }
-        } else {
-            setGetAllUserInfoWtihAllGroupMembersState()
-            return true
-        }
-        return false
-        return mAccountService.getGroupMembers(groupId).convert()
-    }
+//    fun fetchGroupMembers(groupId: String): Observable<List<GroupMemberResp>> {
+//        var fetchGroupCount = 0
+//        if (mGroupsList!!.isNotEmpty()) {
+//            deleteGroupMembers()
+//            for (group in mGroupsList!!) {
+//                val groupMemberResponse: GetGroupMemberResponse?
+//                try {
+//                    mAccountService.getGroupMembers(group.groupsId).convert()
+//                            .map {
+//                                fetchGroupCount++
+//                                if (it.isNotEmpty()) {
+//                                    if (mGroupMemberBox != null) {
+//                                        addGroupMembers(it, group.groupsId)
+//                                    } else if (mBoxStore == null) {
+//                                        //如果这两个都为null,说明是被踢,已经关闭数据库,没要必要继续执行
+//                                        false
+//                                    }
+//                                } else {
+//                                    if (fetchGroupCount > 0) {
+//                                        setGetAllUserInfoWithPartGroupMembersState()
+//                                    }
+//                                    false
+//                                }
+//                            }
+//                } catch (e: JSONException) {
+//                    fetchGroupCount++
+//                    continue
+//                }
+//
+//                if (groupMemberResponse != null && groupMemberResponse!!.getCode() === 200) {
+//                    fetchGroupCount++
+//                    val list = groupMemberResponse!!.getResult()
+//                    if (list != null && list!!.size > 0) {
+//                        if (mGroupMemberDao != null) {
+//                            addGroupMembers(list, group.getGroupsId())
+//                        } else if (mDBManager == null) {
+//                            //如果这两个都为null,说明是被踢,已经关闭数据库,没要必要继续执行
+//                            return false
+//                        }
+//                    }
+//                } else {
+//                    if (fetchGroupCount > 0) {
+//                        setGetAllUserInfoWithPartGroupMembersState()
+//                    }
+//                    return false
+//                }
+//            }
+//            if (mGroupsList != null && fetchGroupCount == mGroupsList.size) {
+//                setGetAllUserInfoWtihAllGroupMembersState()
+//                return true
+//            }
+//        } else {
+//            setGetAllUserInfoWtihAllGroupMembersState()
+//            return true
+//        }
+//        return false
+//        return mAccountService.getGroupMembers(groupId).convert()
+//    }
 
     fun fetchBlackList(): Observable<List<BlackListResp>> {
         return mAccountService.getBlackList().convert()

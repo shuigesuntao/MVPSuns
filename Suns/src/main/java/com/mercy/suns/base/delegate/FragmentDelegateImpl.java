@@ -17,6 +17,7 @@ package com.mercy.suns.base.delegate;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.view.View;
@@ -48,19 +49,19 @@ public class FragmentDelegateImpl implements FragmentDelegate {
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    public void onCreate(@Nullable Bundle savedInstanceState) {
         if (iFragment.useEventBus()){
             EventBus.getDefault().register(mFragment);//注册到事件主线
         }
     }
 
     @Override
-    public void onCreateView(View view, Bundle savedInstanceState) {
+    public void onCreateView(@Nullable View view,@Nullable Bundle savedInstanceState) {
 
     }
 
     @Override
-    public void onActivityCreate(Bundle savedInstanceState) {
+    public void onActivityCreate(@Nullable Bundle savedInstanceState) {
         iFragment.initData(savedInstanceState);
     }
 
@@ -85,7 +86,7 @@ public class FragmentDelegateImpl implements FragmentDelegate {
     }
 
     @Override
-    public void onSaveInstanceState(Bundle outState) {
+    public void onSaveInstanceState(@Nullable Bundle outState) {
 
     }
 

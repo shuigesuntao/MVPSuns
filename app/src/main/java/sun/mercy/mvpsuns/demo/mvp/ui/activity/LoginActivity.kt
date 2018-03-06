@@ -15,8 +15,10 @@ import sun.mercy.mvpsuns.demo.mvp.ui.widget.Loader
 
 class LoginActivity : BaseMvpActivity<LoginPresenter>(), LoginContract.View, View.OnClickListener{
 
+
     private lateinit var mPhone: String
     private lateinit var mPassword: String
+
 
     override fun initView(savedInstanceState: Bundle?): Int {
         return R.layout.activity_login
@@ -36,9 +38,10 @@ class LoginActivity : BaseMvpActivity<LoginPresenter>(), LoginContract.View, Vie
         Loader.stopLoading()
     }
 
-    override fun showMessage(message: String?) {
+    override fun showMessage(message: String) {
         SunsUtils.snackbarText(message)
     }
+
 
 
     override fun onLoginSuccess() {
