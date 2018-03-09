@@ -430,7 +430,7 @@ class UserInfoManager constructor(private val context: Context) {
     }
 
 
-    private fun setGetAllUserInfoWtihAllGroupMembersState() {
+    private fun setGetAllUserInfoWithAllGroupMembersState() {
         mGetAllUserInfoState = mGetAllUserInfoState and PARTGROUPMEMBERS.inv()
         mGetAllUserInfoState = mGetAllUserInfoState or GROUPMEMBERS
     }

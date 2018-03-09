@@ -3,8 +3,6 @@ package sun.mercy.mvpsuns.demo.mvp.ui.activity
 import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
-import android.view.Window
-import android.widget.Toast
 import com.mercy.suns.utils.DataHelper
 import com.mercy.suns.utils.PermissionUtil
 import com.mercy.suns.utils.SunsUtils
@@ -12,10 +10,9 @@ import com.tbruyelle.rxpermissions2.RxPermissions
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
-import me.jessyan.rxerrorhandler.core.RxErrorHandler
 import sun.mercy.mvpsuns.demo.app.Const
 import java.util.concurrent.TimeUnit
-import javax.inject.Inject
+
 
 
 class SplashActivity : AppCompatActivity() {
